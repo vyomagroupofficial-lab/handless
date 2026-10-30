@@ -1,6 +1,6 @@
 // ============================================================
 // Vyoma Handless™ — Official Production JavaScript
-// Light Cream Theme | 3D Canvas Orb | Mobile & Android Handler
+// Light Cream & Obsidian Monochrome Theme | 3D Canvas Orb
 // Hostinger (handless.vyomagroup.online)
 // ============================================================
 
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ------------------------------------------------------------
-// 1. 3D Geometric Canvas Orb Animation (Cream Theme Palette)
+// 1. 3D Geometric Canvas Orb Animation (Monochrome Architectural Style)
 // ------------------------------------------------------------
 function initOrbCanvas() {
   const canvas = document.getElementById("orbCanvas");
@@ -95,7 +95,7 @@ function initOrbCanvas() {
     // Sort points back to front
     projected.sort((a, b) => a.z - b.z);
 
-    // Draw connecting lines (refined warm violet/indigo against cream)
+    // Draw connecting lines (refined architectural lines)
     ctx.lineWidth = 0.85;
     for (let i = 0; i < projected.length; i++) {
       for (let j = i + 1; j < projected.length; j++) {
@@ -104,8 +104,8 @@ function initOrbCanvas() {
         const dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist < 40) {
-          const lineAlpha = (1 - dist / 40) * 0.28 * projected[i].alpha;
-          ctx.strokeStyle = `rgba(109, 40, 217, ${lineAlpha})`;
+          const lineAlpha = (1 - dist / 40) * 0.25 * projected[i].alpha;
+          ctx.strokeStyle = `rgba(24, 24, 27, ${lineAlpha * 0.75})`;
           ctx.beginPath();
           ctx.moveTo(projected[i].x, projected[i].y);
           ctx.lineTo(projected[j].x, projected[j].y);
@@ -114,16 +114,16 @@ function initOrbCanvas() {
       }
     }
 
-    // Draw points (rich violet/indigo nodes)
+    // Draw points (rich obsidian black nodes)
     for (let i = 0; i < projected.length; i++) {
       const p = projected[i];
       const pRadius = Math.max(1.2, 2.5 * (p.z + radius) / (2 * radius));
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, pRadius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(91, 33, 182, ${p.alpha * 0.85})`;
-      ctx.shadowColor = "rgba(109, 40, 217, 0.4)";
-      ctx.shadowBlur = 6;
+      ctx.fillStyle = `rgba(24, 24, 27, ${p.alpha * 0.9})`;
+      ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
+      ctx.shadowBlur = 5;
       ctx.fill();
       ctx.shadowBlur = 0;
     }
@@ -135,7 +135,7 @@ function initOrbCanvas() {
 }
 
 // ------------------------------------------------------------
-// 2. Interactive Voice Simulator (Light Cream Styled)
+// 2. Interactive Voice Simulator (Monochrome / Cream Styled)
 // ------------------------------------------------------------
 const SIM_COMMANDS = {
   set_volume: {
@@ -167,29 +167,29 @@ const SIM_COMMANDS = {
       { icon: "⌨️", text: "Typed 'hi' into 'Type a message' box" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(80,60,40,0.12); box-shadow: var(--shadow-md); font-family: sans-serif;">
-        <div style="background: #f0ebe1; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(80,60,40,0.08);">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: #059669; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 13px;">V</div>
+      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(60,50,40,0.12); box-shadow: var(--shadow-md); font-family: sans-serif;">
+        <div style="background: #f5f0e8; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(60,50,40,0.08);">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 13px;">V</div>
           <div>
-            <div style="color: #1c1917; font-size: 13px; font-weight: 700;">Vaishu</div>
-            <div style="color: #78716c; font-size: 11px;">online • Handless Selected Target</div>
+            <div style="color: #18181b; font-size: 13px; font-weight: 700;">Vaishu</div>
+            <div style="color: #71717a; font-size: 11px;">online • Handless Selected Target</div>
           </div>
         </div>
         <div style="height: 130px; padding: 12px; background: #faf7f2; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;">
-          <div style="align-self: flex-start; background: #ffffff; color: #1c1917; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; border: 1px solid rgba(80,60,40,0.08);">
+          <div style="align-self: flex-start; background: #ffffff; color: #18181b; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; border: 1px solid rgba(60,50,40,0.08);">
             Hey, are we still meeting today?
           </div>
-          <div style="align-self: flex-end; background: #d1fae5; color: #065f46; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 4px; border: 1px solid #a7f3d0;">
+          <div style="align-self: flex-end; background: #18181b; color: #ffffff; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 4px;">
             <span style="font-weight: 600;">hi</span>
             <span style="font-size: 9px; opacity: 0.7; margin-left: 4px;">Just now ✓✓</span>
           </div>
         </div>
-        <div style="background: #ffffff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(80,60,40,0.08);">
-          <div style="flex: 1; background: #f5f0e8; border-radius: 8px; padding: 6px 12px; color: #1c1917; font-size: 12px; display: flex; align-items: center;">
+        <div style="background: #ffffff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(60,50,40,0.08);">
+          <div style="flex: 1; background: #f5f0e8; border-radius: 8px; padding: 6px 12px; color: #18181b; font-size: 12px; display: flex; align-items: center;">
             <span style="opacity: 0.6;">Type a message</span>
-            <span style="width: 2px; height: 14px; background: #059669; margin-left: 2px; animation: pulse 1s infinite;"></span>
+            <span style="width: 2px; height: 14px; background: #18181b; margin-left: 2px; animation: pulse 1s infinite;"></span>
           </div>
-          <div style="color: #78716c; font-size: 16px;">🎤</div>
+          <div style="color: #71717a; font-size: 16px;">🎤</div>
         </div>
       </div>
     `
@@ -204,15 +204,15 @@ const SIM_COMMANDS = {
       { icon: "⚡", text: "Dispatched hotkey: Win + Left" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; height: 200px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(80,60,40,0.12); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; box-shadow: var(--shadow-md);">
-        <div style="background: #ede9fe; border: 2px solid #6d28d9; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+      <div style="width: 100%; max-width: 460px; height: 200px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(60,50,40,0.12); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; box-shadow: var(--shadow-md);">
+        <div style="background: #f4f4f5; border: 2px solid #18181b; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
           <div style="font-size: 22px;">🪟</div>
-          <span style="font-size: 12px; font-weight: 700; color: #5b21b6;">Chrome (Snapped 50% Left)</span>
-          <span style="font-size: 10px; color: #78716c;">Bounds: (0, 0, 960, 1080)</span>
+          <span style="font-size: 12px; font-weight: 700; color: #18181b;">Chrome (Snapped 50% Left)</span>
+          <span style="font-size: 10px; color: #71717a;">Bounds: (0, 0, 960, 1080)</span>
         </div>
-        <div style="background: #faf7f2; border: 1px dashed rgba(80,60,40,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
-          <span style="font-size: 11px; font-weight: 600; color: #78716c;">Desktop / Snap Assist</span>
-          <span style="font-size: 9px; color: #a8a29e;">Choose secondary app</span>
+        <div style="background: #faf7f2; border: 1px dashed rgba(60,50,40,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+          <span style="font-size: 11px; font-weight: 600; color: #71717a;">Desktop / Snap Assist</span>
+          <span style="font-size: 9px; color: #a1a1aa;">Choose secondary app</span>
         </div>
       </div>
     `
@@ -227,19 +227,19 @@ const SIM_COMMANDS = {
       { icon: "🧠", text: "Gemini Vision parsed stacktrace in 420ms" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(109,40,217,0.3); padding: 16px; box-shadow: var(--shadow-md); font-family: monospace;">
+      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(24,24,27,0.25); padding: 16px; box-shadow: var(--shadow-md); font-family: monospace;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
           <span style="color: #dc2626; font-size: 12px; font-weight: bold;">● TypeError: Cannot read property 'map' of undefined</span>
-          <span style="font-size: 10px; padding: 2px 6px; background: #ede9fe; color: #6d28d9; border-radius: 4px; font-weight: bold;">Screen Lens OCR</span>
+          <span style="font-size: 10px; padding: 2px 6px; background: #f4f4f5; color: #18181b; border: 1px solid #e4e4e7; border-radius: 4px; font-weight: bold;">Screen Lens OCR</span>
         </div>
-        <div style="background: #f5f0e8; padding: 8px 10px; border-radius: 6px; font-size: 11px; color: #44403c; margin-bottom: 12px; border-left: 3px solid #dc2626;">
+        <div style="background: #f5f0e8; padding: 8px 10px; border-radius: 6px; font-size: 11px; color: #3f3f46; margin-bottom: 12px; border-left: 3px solid #dc2626;">
           at UserList (components/Users.tsx:42:15)<br>
           at renderWithHooks (react-dom.development.js:16305)
         </div>
-        <div style="background: #faf5ff; border-radius: 6px; padding: 10px; font-size: 12px; color: #1c1917; font-family: var(--font-sans); border: 1px solid #ddd6fe;">
-          <strong style="color: #6d28d9;">💡 Handless AI Solution:</strong>
-          <p style="margin-top: 4px; font-size: 11px; color: #44403c; line-height: 1.45;">
-            Your <code style="color: #5b21b6; background: #ede9fe; padding: 1px 4px; border-radius: 3px;">users</code> state variable is <code style="color: #5b21b6;">undefined</code> prior to fetch completion. Update line 42 to <code style="color: #059669; font-weight: bold;">users?.map(...)</code> or initialize state as <code style="color: #059669; font-weight: bold;">[]</code>.
+        <div style="background: #f4f4f5; border-radius: 6px; padding: 10px; font-size: 12px; color: #18181b; font-family: var(--font-sans); border: 1px solid #e4e4e7;">
+          <strong style="color: #18181b;">💡 Handless AI Solution:</strong>
+          <p style="margin-top: 4px; font-size: 11px; color: #3f3f46; line-height: 1.45;">
+            Your <code style="color: #18181b; background: #e4e4e7; padding: 1px 4px; border-radius: 3px;">users</code> state variable is <code style="color: #18181b;">undefined</code> prior to fetch completion. Update line 42 to <code style="color: #18181b; font-weight: bold;">users?.map(...)</code> or initialize state as <code style="color: #18181b; font-weight: bold;">[]</code>.
           </p>
         </div>
       </div>
@@ -256,13 +256,13 @@ const SIM_COMMANDS = {
       { icon: "🚀", text: "F8 released: Typed 14 words in 68ms" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(80,60,40,0.12); padding: 18px; box-shadow: var(--shadow-md);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(80,60,40,0.08);">
-          <span style="font-size: 12px; font-weight: 700; color: #1c1917;">Active Document — WordPad</span>
-          <span style="font-size: 10px; padding: 2px 8px; background: #ecfdf5; color: #047857; border-radius: 10px; font-weight: 700;">Sub-100ms Realtime</span>
+      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(60,50,40,0.12); padding: 18px; box-shadow: var(--shadow-md);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(60,50,40,0.08);">
+          <span style="font-size: 12px; font-weight: 700; color: #18181b;">Active Document — WordPad</span>
+          <span style="font-size: 10px; padding: 2px 8px; background: #f4f4f5; color: #18181b; border: 1px solid #e4e4e7; border-radius: 10px; font-weight: 700;">Sub-100ms Realtime</span>
         </div>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #292524; font-family: serif;">
-          The market response to autonomous desktop workflows has exceeded our expectations. By combining native OS accessibility with speculative transcription, Handless completely eliminates friction<span style="display: inline-block; width: 2px; height: 16px; background: #6d28d9; vertical-align: middle; margin-left: 2px; animation: pulse 0.8s infinite;"></span>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #27272a; font-family: serif;">
+          The market response to autonomous desktop workflows has exceeded our expectations. By combining native OS accessibility with speculative transcription, Handless completely eliminates friction<span style="display: inline-block; width: 2px; height: 16px; background: #18181b; vertical-align: middle; margin-left: 2px; animation: pulse 0.8s infinite;"></span>
         </p>
       </div>
     `
@@ -343,7 +343,7 @@ function copyCode() {
     if (copyBtn) {
       const originalText = copyBtn.innerText;
       copyBtn.innerText = "Copied!";
-      copyBtn.style.background = "#059669";
+      copyBtn.style.background = "#18181b";
       copyBtn.style.color = "#fff";
 
       setTimeout(() => {
@@ -445,7 +445,7 @@ function initMobileSupport() {
       navigator.clipboard.writeText(url).then(() => {
         const originalText = btnCopyDesktop.innerText;
         btnCopyDesktop.innerText = "✓ Direct PC Link Copied!";
-        btnCopyDesktop.style.background = "#059669";
+        btnCopyDesktop.style.background = "#18181b";
         btnCopyDesktop.style.color = "#ffffff";
 
         setTimeout(() => {
@@ -459,4 +459,3 @@ function initMobileSupport() {
     });
   }
 }
-
