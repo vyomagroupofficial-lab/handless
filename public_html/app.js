@@ -135,36 +135,53 @@ function initOrbCanvas() {
 }
 
 // ------------------------------------------------------------
-// 2. Interactive Voice Simulator (Monochrome / Cream Styled)
+// 2. SVG Icon Library & Interactive Voice Simulator
 // ------------------------------------------------------------
+const SVGS = {
+  bolt: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  volume: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
+  link: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+  cursor: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 15l6 6m-6-6v4.5m0-4.5h4.5M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>`,
+  keyboard: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>`,
+  window: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>`,
+  camera: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+  brain: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-6.5l-2.1 2.1m-8.8 8.8l-2.1 2.1m0-13l2.1 2.1m8.8 8.8l2.1 2.1"/></svg>`,
+  mic: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`,
+  rocket: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"/></svg>`,
+  doubleCheck: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 6 9 17 4 12"/><polyline points="22 10 13 21 11 19"/></svg>`,
+  lightbulb: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M9 18h6m-4 4h2m-5-8.5a6 6 0 1 1 8 0c-.8.8-1.5 2-1.5 3.5h-5c0-1.5-.7-2.7-1.5-3.5z"/></svg>`,
+  eye: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 3px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+};
+
 const SIM_COMMANDS = {
   set_volume: {
     title: "Windows 11 Desktop — Master Audio Control",
     tier: "Tier 1: Local Rule (<5ms)",
-    state: "Done ✓",
+    state: `${SVGS.check} Done`,
     transcript: '"Set my volume to 80%"',
     logs: [
-      { icon: "⚡", text: "Matched Rule: SetVolume(80)" },
-      { icon: "🔊", text: "IAudioEndpointVolume: 0.80 applied" }
+      { icon: SVGS.bolt, text: "Matched Rule: SetVolume(80)" },
+      { icon: SVGS.volume, text: "IAudioEndpointVolume: 0.80 applied" }
     ],
     render: () => `
       <div class="hud-box">
         <div class="hud-slider-track">
           <div class="hud-slider-fill" style="width: 80%;"></div>
         </div>
-        <span class="hud-label">🔊 Master Volume Adjusted to 80%</span>
+        <span class="hud-label">${SVGS.volume} Master Volume Adjusted to 80%</span>
       </div>
     `
   },
   whatsapp_msg: {
     title: "WhatsApp Web (Chrome CDP Pierced) — Vyoma Handless",
     tier: "Tier 1: Local Chained Rule (<15ms)",
-    state: "Chained Done ✓",
+    state: `${SVGS.check} Chained Done`,
     transcript: '"Select Vaishu and type hi"',
     logs: [
-      { icon: "🔗", text: "Chained 2 actions: Click contact -> Type text" },
-      { icon: "👉", text: "Clicked contact: 'Vaishu' (WhatsApp list item)" },
-      { icon: "⌨️", text: "Typed 'hi' into 'Type a message' box" }
+      { icon: SVGS.link, text: "Chained 2 actions: Click contact -> Type text" },
+      { icon: SVGS.cursor, text: "Clicked contact: 'Vaishu' (WhatsApp list item)" },
+      { icon: SVGS.keyboard, text: "Typed 'hi' into 'Type a message' box" }
     ],
     render: () => `
       <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(60,50,40,0.12); box-shadow: var(--shadow-md); font-family: sans-serif;">
@@ -179,9 +196,9 @@ const SIM_COMMANDS = {
           <div style="align-self: flex-start; background: #ffffff; color: #18181b; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; border: 1px solid rgba(60,50,40,0.08);">
             Hey, are we still meeting today?
           </div>
-          <div style="align-self: flex-end; background: #18181b; color: #ffffff; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 4px;">
+          <div style="align-self: flex-end; background: #18181b; color: #ffffff; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 6px;">
             <span style="font-weight: 600;">hi</span>
-            <span style="font-size: 9px; opacity: 0.7; margin-left: 4px;">Just now ✓✓</span>
+            <span style="display: inline-flex; align-items: center; opacity: 0.8;">${SVGS.doubleCheck}</span>
           </div>
         </div>
         <div style="background: #ffffff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(60,50,40,0.08);">
@@ -189,7 +206,7 @@ const SIM_COMMANDS = {
             <span style="opacity: 0.6;">Type a message</span>
             <span style="width: 2px; height: 14px; background: #18181b; margin-left: 2px; animation: pulse 1s infinite;"></span>
           </div>
-          <div style="color: #71717a; font-size: 16px;">🎤</div>
+          <div style="color: #71717a; display: flex; align-items: center;">${SVGS.mic}</div>
         </div>
       </div>
     `
@@ -197,16 +214,16 @@ const SIM_COMMANDS = {
   snap_left: {
     title: "Windows 11 Snap Assist — Layout Manager",
     tier: "Tier 1: System Hotkey (Win+Left)",
-    state: "Snapped ✓",
+    state: `${SVGS.check} Snapped`,
     transcript: '"Snap window to the left"',
     logs: [
-      { icon: "🪟", text: "Target active window: Chrome" },
-      { icon: "⚡", text: "Dispatched hotkey: Win + Left" }
+      { icon: SVGS.window, text: "Target active window: Chrome" },
+      { icon: SVGS.bolt, text: "Dispatched hotkey: Win + Left" }
     ],
     render: () => `
       <div style="width: 100%; max-width: 460px; height: 200px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(60,50,40,0.12); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; box-shadow: var(--shadow-md);">
-        <div style="background: #f4f4f5; border: 2px solid #18181b; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
-          <div style="font-size: 22px;">🪟</div>
+        <div style="background: #f4f4f5; border: 2px solid #18181b; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+          <div style="color: #18181b;">${SVGS.window}</div>
           <span style="font-size: 12px; font-weight: 700; color: #18181b;">Chrome (Snapped 50% Left)</span>
           <span style="font-size: 10px; color: #71717a;">Bounds: (0, 0, 960, 1080)</span>
         </div>
@@ -220,11 +237,11 @@ const SIM_COMMANDS = {
   screen_lens: {
     title: "Screen Lens — Gemini 2.5 Flash Vision Grounding",
     tier: "Tier 3: Cloud Gemini Vision (420ms)",
-    state: "Analyzed 👁️",
+    state: `${SVGS.eye} Analyzed`,
     transcript: '"Screen lens: explain this error"',
     logs: [
-      { icon: "📸", text: "Captured screen bitmap (1920x1080)" },
-      { icon: "🧠", text: "Gemini Vision parsed stacktrace in 420ms" }
+      { icon: SVGS.camera, text: "Captured screen bitmap (1920x1080)" },
+      { icon: SVGS.brain, text: "Gemini Vision parsed stacktrace in 420ms" }
     ],
     render: () => `
       <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(24,24,27,0.25); padding: 16px; box-shadow: var(--shadow-md); font-family: monospace;">
@@ -237,7 +254,7 @@ const SIM_COMMANDS = {
           at renderWithHooks (react-dom.development.js:16305)
         </div>
         <div style="background: #f4f4f5; border-radius: 6px; padding: 10px; font-size: 12px; color: #18181b; font-family: var(--font-sans); border: 1px solid #e4e4e7;">
-          <strong style="color: #18181b;">💡 Handless AI Solution:</strong>
+          <strong style="color: #18181b;">${SVGS.lightbulb} Handless AI Solution:</strong>
           <p style="margin-top: 4px; font-size: 11px; color: #3f3f46; line-height: 1.45;">
             Your <code style="color: #18181b; background: #e4e4e7; padding: 1px 4px; border-radius: 3px;">users</code> state variable is <code style="color: #18181b;">undefined</code> prior to fetch completion. Update line 42 to <code style="color: #18181b; font-weight: bold;">users?.map(...)</code> or initialize state as <code style="color: #18181b; font-weight: bold;">[]</code>.
           </p>
@@ -248,12 +265,12 @@ const SIM_COMMANDS = {
   spec_dictation: {
     title: "Wispr Flow Dictation — Sub-100ms Speculative Streaming",
     tier: "Speculative Engine (<100ms)",
-    state: "Typing ⚡",
+    state: `${SVGS.bolt} Typing`,
     transcript: '"Hold F8: The market response to autonomous desktop workflows has exceeded our expectations..."',
     logs: [
-      { icon: "🎙️", text: "F8 key down: Speculative streaming chunk 1 & 2" },
-      { icon: "⚡", text: "Whisper Large v3 pre-transcription completed" },
-      { icon: "🚀", text: "F8 released: Typed 14 words in 68ms" }
+      { icon: SVGS.mic, text: "F8 key down: Speculative streaming chunk 1 & 2" },
+      { icon: SVGS.bolt, text: "Whisper Large v3 pre-transcription completed" },
+      { icon: SVGS.rocket, text: "F8 released: Typed 14 words in 68ms" }
     ],
     render: () => `
       <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(60,50,40,0.12); padding: 18px; box-shadow: var(--shadow-md);">
@@ -443,13 +460,13 @@ function initMobileSupport() {
     btnCopyDesktop.addEventListener("click", () => {
       const url = "https://handless.vyomagroup.online/downloads/VyomaHandless-v0.1.0-windows-x64.zip";
       navigator.clipboard.writeText(url).then(() => {
-        const originalText = btnCopyDesktop.innerText;
-        btnCopyDesktop.innerText = "✓ Direct PC Link Copied!";
+        const originalHTML = btnCopyDesktop.innerHTML;
+        btnCopyDesktop.innerHTML = `${SVGS.check} <span>Direct PC Link Copied!</span>`;
         btnCopyDesktop.style.background = "#18181b";
         btnCopyDesktop.style.color = "#ffffff";
 
         setTimeout(() => {
-          btnCopyDesktop.innerText = originalText;
+          btnCopyDesktop.innerHTML = originalHTML;
           btnCopyDesktop.style.background = "";
           btnCopyDesktop.style.color = "";
         }, 2500);

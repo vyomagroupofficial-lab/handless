@@ -26,7 +26,12 @@
   <!-- Mobile / Android Device Banner Notice -->
   <div class="mobile-device-banner" id="mobileDeviceBanner">
     <div class="mobile-banner-content">
-      <span class="banner-icon">💻</span>
+      <span class="banner-icon">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+          <line x1="1" y1="21" x2="23" y2="21"/>
+        </svg>
+      </span>
       <div class="banner-text">
         <strong>Windows 11 / 10 Desktop Application:</strong> Handless is engineered for Windows PCs and is <u>not available on Android or mobile devices</u>. You can browse all features & docs below!
       </div>
@@ -62,7 +67,12 @@
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
           <span>Star on GitHub</span>
-          <span class="star-badge">★ Open Source</span>
+          <span class="star-badge">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align: -1px; margin-right: 2px;">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            Open Source
+          </span>
         </a>
         <a href="#download" class="btn btn-primary download-trigger">Download .exe</a>
         <button class="mobile-toggle-btn" id="mobileToggleBtn" aria-label="Open Navigation">
@@ -132,7 +142,12 @@
         </div>
 
         <div class="hero-platform-disclaimer">
-          <span>⚠️ Handless is engineered specifically for Windows desktop PCs. Not supported on Android or mobile phones.</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px; flex-shrink: 0;">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span>Handless is engineered specifically for Windows desktop PCs. Not supported on Android or mobile phones.</span>
         </div>
 
         <!-- Quick Stats Pills -->
@@ -207,7 +222,10 @@
             <div class="sim-sidebar" id="simSidebar">
               <div class="sim-sidebar-header">
                 <span class="sim-brand">handless<small>™</small></span>
-                <span class="sim-chip" id="simActionState">Done ✓</span>
+                <span class="sim-chip" id="simActionState">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"/></svg>
+                  Done
+                </span>
               </div>
               <div class="sim-sidebar-body">
                 <div class="sim-prompt-box">
@@ -215,11 +233,15 @@
                 </div>
                 <div class="sim-action-log" id="simActionLog">
                   <div class="log-entry">
-                    <span class="log-icon">⚡</span>
+                    <span class="log-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </span>
                     <span class="log-text">Matched Rule: SetVolume(80)</span>
                   </div>
                   <div class="log-entry">
-                    <span class="log-icon">🔊</span>
+                    <span class="log-icon">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    </span>
                     <span class="log-text">IAudioEndpointVolume: 0.80 applied</span>
                   </div>
                 </div>
@@ -233,7 +255,10 @@
                   <div class="hud-slider-track">
                     <div class="hud-slider-fill" id="hudSliderFill" style="width: 80%;"></div>
                   </div>
-                  <span class="hud-label" id="hudLabel">🔊 Master Volume Adjusted to 80%</span>
+                  <span class="hud-label" id="hudLabel">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                    Master Volume Adjusted to 80%
+                  </span>
                 </div>
               </div>
             </div>
@@ -566,7 +591,10 @@ python -m handless.app</code></pre>
   <div class="modal-backdrop" id="mobileModal">
     <div class="modal-card">
       <div class="modal-header">
-        <span class="modal-badge">⚠️ Windows PC Only</span>
+        <span class="modal-badge">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px; margin-right: 4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Windows PC Only
+        </span>
         <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
       </div>
       <h3 class="modal-title">Not Compatible With Android</h3>
@@ -574,11 +602,18 @@ python -m handless.app</code></pre>
         Vyoma Handless is a native 64-bit Windows software package (.exe) designed for Windows 11 / 10 PCs. It cannot run or install on Android phones or tablets.
       </p>
       <div class="modal-tip">
-        💡 <strong>Tip:</strong> Copy the download link to send to your PC via WhatsApp/Email, or star our GitHub repo so you can find it later on your desktop.
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><path d="M9 18h6m-4 4h2m-5-8.5a6 6 0 1 1 8 0c-.8.8-1.5 2-1.5 3.5h-5c0-1.5-.7-2.7-1.5-3.5z"/></svg>
+        <strong>Tip:</strong> Copy the download link to send to your PC via WhatsApp/Email, or star our GitHub repo so you can find it later on your desktop.
       </div>
       <div class="modal-actions">
-        <button class="btn btn-primary w-full" id="btnCopyDesktopLink">📋 Copy PC Download Link</button>
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github w-full">⭐ Star On GitHub</a>
+        <button class="btn btn-primary w-full" id="btnCopyDesktopLink">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy PC Download Link</span>
+        </button>
+        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github w-full">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Star On GitHub</span>
+        </a>
       </div>
       <div class="modal-footer-link">
         <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download>Download file anyway (to transfer to PC)</a>

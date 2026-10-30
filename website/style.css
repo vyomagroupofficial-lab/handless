@@ -754,15 +754,16 @@ kbd {
   border-radius: var(--radius-lg);
   padding: 36px;
   box-shadow: var(--shadow-lg);
+  overflow: visible;
 }
 
 .simulator-controls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 10px 12px;
   flex-wrap: wrap;
   margin-bottom: 24px;
-  padding-bottom: 18px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--border-card);
 }
 
@@ -771,6 +772,7 @@ kbd {
   font-weight: 700;
   color: var(--text-muted);
   margin-right: 6px;
+  white-space: nowrap;
 }
 
 .cmd-pill {
@@ -782,6 +784,7 @@ kbd {
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
   transition: all var(--transition-fast);
 }
 
