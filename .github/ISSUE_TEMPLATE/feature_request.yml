@@ -1,0 +1,34 @@
+name: "✨ Feature Request"
+description: "Suggest a new idea, voice command pattern, or integration for Vyoma Handless"
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to make Vyoma Handless even better? We'd love to hear your proposal!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "Problem or Workflow Gap"
+      description: "Is your feature request related to a specific workflow or problem you face?"
+      placeholder: "I'm always doing X manually on my PC, and I wish Handless could..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: "Proposed Solution"
+      description: "Describe the voice commands, UI behavior, or integration you have in mind."
+      placeholder: "Add voice command '...' which calls native API '...' to do '...'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "Alternatives Considered"
+      description: "Any alternative approaches or existing software you've looked at?"
+
