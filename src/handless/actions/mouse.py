@@ -97,10 +97,16 @@ class MouseController:
         return False
 
     def scroll(self, direction: str = "down", amount: int = 3) -> bool:
-        """Scroll mouse wheel up or down."""
+        """Scroll mouse wheel up or down at current position or over active screen."""
         try:
+            cx, cy = pyautogui.position()
+            # If cursor is resting in the top-left corner, reposition to center
+            if cx < 30 and cy < 30:
+                sw, sh = pyautogui.size()
+                pyautogui.moveTo(sw // 2, sh // 2)
+
             clicks = amount * 120
-            if direction.lower() == "down":
+            if direction.lower() in ("down", "bottom"):
                 clicks = -clicks
             pyautogui.scroll(clicks)
             logger.info("Scrolled %s by %d units", direction, amount)

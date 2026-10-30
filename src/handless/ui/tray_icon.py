@@ -53,12 +53,14 @@ class HandlessTrayIcon(QSystemTrayIcon):
         self,
         on_toggle_bar: Optional[Callable[[], None]] = None,
         on_open_settings: Optional[Callable[[], None]] = None,
+        on_toggle_dictation: Optional[Callable[[], None]] = None,
         on_exit: Optional[Callable[[], None]] = None,
         parent=None,
     ) -> None:
         super().__init__(parent)
         self.on_toggle_bar = on_toggle_bar
         self.on_open_settings = on_open_settings
+        self.on_toggle_dictation = on_toggle_dictation
         self.on_exit = on_exit
 
         self.setIcon(create_tray_icon_pixmap())
@@ -67,10 +69,15 @@ class HandlessTrayIcon(QSystemTrayIcon):
         # Build Context Menu
         self.menu = QMenu()
 
-        self.toggle_action = QAction("Show / Hide Voice Bar", self.menu)
+        self.toggle_action = QAction("Show / Hide Sidebar (Ctrl+Alt+H)", self.menu)
         if self.on_toggle_bar:
             self.toggle_action.triggered.connect(self.on_toggle_bar)
         self.menu.addAction(self.toggle_action)
+
+        self.dictation_action = QAction("Toggle Dictation Mode (Ctrl+Alt+D)", self.menu)
+        if self.on_toggle_dictation:
+            self.dictation_action.triggered.connect(self.on_toggle_dictation)
+        self.menu.addAction(self.dictation_action)
 
         self.settings_action = QAction("Settings...", self.menu)
         if self.on_open_settings:

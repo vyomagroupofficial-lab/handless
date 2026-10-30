@@ -8,6 +8,7 @@ from typing import Any, Dict, List, Optional
 
 from .base import BaseIntentInterpreter
 from .gemini_client import GeminiInterpreter
+from .groq_client import GroqInterpreter
 from .local_llm import LocalLLMInterpreter
 from .local_parser import LocalRuleParser
 from .models import IntentResult
@@ -23,11 +24,13 @@ class IntentRouter:
         local_parser: Optional[LocalRuleParser] = None,
         local_llm: Optional[LocalLLMInterpreter] = None,
         gemini: Optional[GeminiInterpreter] = None,
+        groq: Optional[GroqInterpreter] = None,
         mode: str = "hybrid",  # "local_only", "hybrid", "cloud_only"
     ) -> None:
         self.local_parser = local_parser or LocalRuleParser()
         self.local_llm = local_llm or LocalLLMInterpreter()
         self.gemini = gemini or GeminiInterpreter()
+        self.groq = groq or GroqInterpreter()
         self.mode = mode
 
     def interpret(
@@ -38,6 +41,7 @@ class IntentRouter:
             return None
 
         # Tier 1: Try deterministic local rules first (unless mode is strictly cloud_only)
+        local_res = None
         if self.mode != "cloud_only":
             local_res = self.local_parser.interpret(cleaned, context=context)
             if local_res and local_res.confidence >= 0.8:
@@ -53,19 +57,37 @@ class IntentRouter:
                     return llm_res
             return local_res  # may be None or lower confidence
 
-        # Tier 2: Try Local LLM if available
+        # Tier 2: Try Local LLM if available and preferred
         if self.local_llm.is_available():
-            logger.info("Escalating command to Tier 2 Local LLM...")
+            logger.info("Evaluating command via Tier 2 Local LLM...")
             llm_res = self.local_llm.interpret(cleaned, context=context)
             if llm_res and llm_res.confidence >= 0.7:
                 return llm_res
 
-        # Tier 3: Escalate to Cloud Gemini
+        # Tier 3: Cloud AI (Prioritizing Groq Cloud for ultra-fast 300+ tok/s and 14,400 free RPD)
+        if self.groq.is_available():
+            logger.info("Routing command to Tier 3 Groq Cloud...")
+            groq_res = self.groq.interpret(cleaned, context=context)
+            if groq_res:
+                return groq_res
+            logger.warning("Groq interpretation failed. Attempting Gemini fallback...")
+
+        # Tier 3 Fallback: Gemini Cloud
         if self.gemini.is_available():
             logger.info("Escalating command to Tier 3 Cloud Gemini...")
             gemini_res = self.gemini.interpret(cleaned, context=context)
             if gemini_res:
                 return gemini_res
 
+        # Tier 2 Fallback: If Local LLM hasn't been tried yet, try it now
+        if not self.local_llm.is_available():
+            logger.debug("Local LLM not available for final fallback.")
+        else:
+            logger.info("Attempting final fallback to Tier 2 Local LLM...")
+            llm_res = self.local_llm.interpret(cleaned, context=context)
+            if llm_res:
+                return llm_res
+
         # Fallback to local_res if any was found
         return local_res
+

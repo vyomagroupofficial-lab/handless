@@ -30,12 +30,18 @@ class HotkeysConfig(BaseModel):
     push_to_talk: str = "<ctrl>+<space>"
     emergency_stop: str = "<ctrl>+<shift>+q"
     toggle_bar: str = "<ctrl>+<alt>+h"
+    toggle_dictation: str = "<ctrl>+<alt>+d"
 
 
 class VoiceConfig(BaseModel):
     mode: str = Field(default="push_to_talk", description="push_to_talk or continuous")
-    vad_aggressiveness: int = Field(default=2, ge=0, le=3)
+    stt_engine: str = Field(default="groq_whisper", description="groq_whisper, whisper, or vosk")
+    groq_whisper_model: str = Field(default="whisper-large-v3", description="whisper-large-v3 or whisper-large-v3-turbo")
+    whisper_model_path: str = Field(
+        default="models/sherpa-onnx-whisper-base.en"
+    )
     vosk_model_path: str = Field(default="models/vosk-model-small-en-us-0.15")
+    vad_aggressiveness: int = Field(default=2, ge=0, le=3)
     sample_rate: int = 16000
     device_index: int = -1  # -1 = system default
 
@@ -45,6 +51,8 @@ class AIConfig(BaseModel):
         default="hybrid", description="local_only, hybrid, or cloud_only"
     )
     gemini_model: str = "gemini-2.5-flash"
+    groq_model: str = "qwen/qwen3.8-27b"
+    groq_endpoint: str = "https://api.groq.com/openai/v1/chat/completions"
     local_llm_endpoint: str = "http://localhost:11434/api/generate"  # Ollama default
     local_llm_model: str = "qwen2.5-coder:3b"
     enable_vision_fallback: bool = True
@@ -52,6 +60,9 @@ class AIConfig(BaseModel):
 
 class UIConfig(BaseModel):
     theme: str = "cream"
+    ui_mode: str = "sidebar"  # "sidebar" or "top_bar"
+    sidebar_width: int = 400
+    sidebar_position: str = "right"  # "right" or "left"
     stay_on_top: bool = True
     start_in_tray: bool = False
     window_opacity: float = 0.98
@@ -86,7 +97,16 @@ def load_config(path: Path | None = None) -> AppConfig:
     try:
         with open(config_file, "rb") as f:
             data = tomllib.load(f)
-        return AppConfig.model_validate(data)
+        cfg = AppConfig.model_validate(data)
+        # Auto-upgrade to Groq Whisper when Groq key is configured
+        try:
+            from handless.security.credentials import has_groq_api_key
+            if has_groq_api_key() and cfg.voice.stt_engine in ("whisper", "nvidia_parakeet"):
+                cfg.voice.stt_engine = "groq_whisper"
+                save_config(cfg, config_file)
+        except Exception:
+            pass
+        return cfg
     except Exception as exc:
         logger.warning("Error reading config from %s: %s. Using defaults.", config_file, exc)
         return AppConfig()

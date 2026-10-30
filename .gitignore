@@ -32,14 +32,32 @@ venv/
 ENV/
 env/
 
-# Vosk Large models (optional to keep git lean; helper script downloads it)
+# ASR models (Vosk, Parakeet, Whisper)
 models/vosk-model-small-en-us-0.15/
+models/sherpa-onnx-*/
 models/*.zip
+models/*.tar.bz2
 
 # Unit test / coverage
 .pytest_cache/
 .coverage
 htmlcov/
 
-# User local configs
+# User local configs & secrets
+.env
+.env.*
 config.local.toml
+
+# Runtime logs & data
+logs/
+*.log
+data/
+
+# Developer tools & IDEs
+tools/
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.gemini/
+

@@ -2,5 +2,13 @@
 from .microphone import MicrophonePipeline
 from .recognizer import VoskSpeechRecognizer
 from .vad import VoiceActivityDetector
+from .whisper_engine import WhisperSpeechRecognizer
+from .groq_whisper import GroqWhisperRecognizer
 
-__all__ = ["MicrophonePipeline", "VoskSpeechRecognizer", "VoiceActivityDetector"]
+__all__ = [
+    "MicrophonePipeline",
+    "VoskSpeechRecognizer",
+    "VoiceActivityDetector",
+    "WhisperSpeechRecognizer",
+    "GroqWhisperRecognizer",
+]

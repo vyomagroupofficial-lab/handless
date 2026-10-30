@@ -38,8 +38,9 @@ class EmergencyStop:
 
     def reset(self) -> None:
         """Reset the stop state so new actions can be run."""
-        self._stop_event.clear()
-        logger.info("Emergency stop reset.")
+        if self._stop_event.is_set():
+            self._stop_event.clear()
+            logger.info("Emergency stop reset.")
 
     def is_stopped(self) -> bool:
         """Check if an emergency stop is active."""

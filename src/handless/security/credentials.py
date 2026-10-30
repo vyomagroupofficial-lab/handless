@@ -84,3 +84,54 @@ def has_gemini_api_key() -> bool:
     """Check whether a Gemini API key is configured."""
     key = get_gemini_api_key()
     return bool(key and len(key) > 5)
+
+
+GROQ_KEY_ACCOUNT = "groq_api_key"
+
+
+def get_groq_api_key() -> Optional[str]:
+    """Retrieve the Groq API key from Windows Credential Manager or environment."""
+    try:
+        stored_key = keyring.get_password(SERVICE_NAME, GROQ_KEY_ACCOUNT)
+        if stored_key and stored_key.strip():
+            return stored_key.strip()
+    except Exception as exc:
+        logger.warning("Could not read Groq credential from Windows Credential Manager: %s", exc)
+
+    env_key = os.environ.get("GROQ_API_KEY", "").strip()
+    return env_key if env_key else None
+
+
+def store_groq_api_key(api_key: str) -> bool:
+    """Store the Groq API key securely in Windows Credential Manager."""
+    cleaned_key = api_key.strip()
+    if not cleaned_key:
+        return False
+
+    try:
+        keyring.set_password(SERVICE_NAME, GROQ_KEY_ACCOUNT, cleaned_key)
+        logger.info("Groq API key successfully stored in Windows Credential Manager.")
+        return True
+    except Exception as exc:
+        logger.error("Failed to store Groq credential in Windows Credential Manager: %s", exc)
+        return False
+
+
+def delete_groq_api_key() -> bool:
+    """Remove the stored Groq API key from Windows Credential Manager."""
+    try:
+        keyring.delete_password(SERVICE_NAME, GROQ_KEY_ACCOUNT)
+        logger.info("Groq API key removed from Windows Credential Manager.")
+        return True
+    except keyring.errors.PasswordDeleteError:
+        return True
+    except Exception as exc:
+        logger.error("Failed to delete Groq credential from Windows Credential Manager: %s", exc)
+        return False
+
+
+def has_groq_api_key() -> bool:
+    """Check whether a Groq API key is configured."""
+    key = get_groq_api_key()
+    return bool(key and len(key) > 5)
+

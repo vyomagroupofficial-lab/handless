@@ -42,7 +42,26 @@ def test_voice_bar_instantiation(qapp):
     qapp.processEvents()
     assert bar._is_listening is True
 
+    # Test typed command submission
+    submitted = []
+    bar.on_command_submitted = lambda cmd: submitted.append(cmd)
+    bar.cmd_input.setText("close whatsapp")
+    bar._handle_cmd_enter()
+    assert submitted == ["close whatsapp"]
+
     bar.close()
+
+
+def test_sidebar_window_instantiation(qapp):
+    from handless.ui.sidebar import SidebarWindow
+    submitted = []
+    sidebar = SidebarWindow(
+        on_command_submitted=lambda cmd: submitted.append(cmd),
+    )
+    assert sidebar.windowTitle() == "Vyoma Handless — Desktop Copilot"
+    sidebar.add_user_message("hello")
+    sidebar.add_assistant_message("hi there")
+    sidebar.close()
 
 
 def test_settings_panel_instantiation(qapp):

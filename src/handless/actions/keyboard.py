@@ -35,9 +35,18 @@ class KeyboardController:
 
         # Fallback to clipboard paste for reliable unicode typing without layout issues
         try:
+            from ..dictation.paste_controller import paste_text
+            success = paste_text(text, preserve_clipboard=True)
+            if success:
+                logger.info("Typed text via clipboard paste: %s", text)
+                return True
+        except Exception as exc:
+            logger.debug("paste_text helper error: %s. Using basic clipboard fallback.", exc)
+
+        try:
             pyperclip.copy(text)
             pyautogui.hotkey("ctrl", "v")
-            logger.info("Typed text via clipboard paste: %s", text)
+            logger.info("Typed text via basic clipboard paste: %s", text)
             return True
         except Exception:
             try:
