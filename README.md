@@ -124,7 +124,7 @@ flowchart TD
 
 1. **Clone the repository:**
    ```powershell
-   git clone https://github.com/vyoma-innovations/handless.git
+   git clone https://github.com/vyomagroupofficial-lab/handless.git
    cd handless
    ```
 
