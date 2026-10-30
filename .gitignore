@@ -32,6 +32,11 @@ venv/
 ENV/
 env/
 
+# Zip bundles & temporary archives
+*.zip
+scratch/
+public_html/downloads/
+
 # ASR models (Vosk, Parakeet, Whisper)
 models/vosk-model-small-en-us-0.15/
 models/sherpa-onnx-*/

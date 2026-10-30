@@ -1,6 +1,7 @@
 // ============================================================
-// Vyoma Handless™ — Official Landing Page JavaScript
-// 3D Canvas Orb | Interactive Voice Simulator | Accordion
+// Vyoma Handless™ — Official Production JavaScript
+// Light Cream Theme | 3D Canvas Orb | Mobile & Android Handler
+// Hostinger (handless.vyomagroup.online)
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ------------------------------------------------------------
-// 1. 3D Geometric Canvas Orb Animation (Gemini Live Replica)
+// 1. 3D Geometric Canvas Orb Animation (Cream Theme Palette)
 // ------------------------------------------------------------
 function initOrbCanvas() {
   const canvas = document.getElementById("orbCanvas");
@@ -29,7 +30,7 @@ function initOrbCanvas() {
   const height = rect.height;
   const cx = width / 2;
   const cy = height / 2;
-  const radius = width * 0.36;
+  const radius = width * 0.35;
 
   // Generate points on a sphere (Fibonacci sphere algorithm)
   const numPoints = 120;
@@ -38,7 +39,7 @@ function initOrbCanvas() {
 
   for (let i = 0; i < numPoints; i++) {
     const theta = 2 * Math.PI * i / phi;
-    const y = 1 - (i / (numPoints - 1)) * 2; // y goes from 1 to -1
+    const y = 1 - (i / (numPoints - 1)) * 2;
     const radiusAtY = Math.sqrt(1 - y * y);
     const x = Math.cos(theta) * radiusAtY;
     const z = Math.sin(theta) * radiusAtY;
@@ -52,12 +53,11 @@ function initOrbCanvas() {
   function render() {
     ctx.clearRect(0, 0, width, height);
 
-    angleX += 0.006;
-    angleY += 0.009;
-    pulse += 0.04;
-    const pulseFactor = 1 + Math.sin(pulse) * 0.05;
+    angleX += 0.005;
+    angleY += 0.008;
+    pulse += 0.035;
+    const pulseFactor = 1 + Math.sin(pulse) * 0.04;
 
-    // Projected 2D points
     const projected = [];
     const cosX = Math.cos(angleX);
     const sinX = Math.sin(angleX);
@@ -83,29 +83,29 @@ function initOrbCanvas() {
       z2 *= pulseFactor;
 
       // Perspective projection
-      const distance = 400;
+      const distance = 420;
       const fov = distance / (distance + z2);
       const px = cx + x2 * fov;
       const py = cy + y2 * fov;
-      const alpha = (z2 + radius) / (2 * radius); // Depth opacity
+      const alpha = (z2 + radius) / (2 * radius);
 
-      projected.push({ x: px, y: py, z: z2, alpha: Math.max(0.15, Math.min(1, alpha)) });
+      projected.push({ x: px, y: py, z: z2, alpha: Math.max(0.18, Math.min(1, alpha)) });
     }
 
-    // Sort by depth for correct z-index rendering
+    // Sort points back to front
     projected.sort((a, b) => a.z - b.z);
 
-    // Draw connecting lines between nearby points
-    ctx.lineWidth = 0.75;
+    // Draw connecting lines (refined warm violet/indigo against cream)
+    ctx.lineWidth = 0.85;
     for (let i = 0; i < projected.length; i++) {
       for (let j = i + 1; j < projected.length; j++) {
         const dx = projected[i].x - projected[j].x;
         const dy = projected[i].y - projected[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
 
-        if (dist < 42) {
-          const lineAlpha = (1 - dist / 42) * 0.25 * projected[i].alpha;
-          ctx.strokeStyle = `rgba(167, 119, 227, ${lineAlpha})`;
+        if (dist < 40) {
+          const lineAlpha = (1 - dist / 40) * 0.28 * projected[i].alpha;
+          ctx.strokeStyle = `rgba(109, 40, 217, ${lineAlpha})`;
           ctx.beginPath();
           ctx.moveTo(projected[i].x, projected[i].y);
           ctx.lineTo(projected[j].x, projected[j].y);
@@ -114,16 +114,16 @@ function initOrbCanvas() {
       }
     }
 
-    // Draw points
+    // Draw points (rich violet/indigo nodes)
     for (let i = 0; i < projected.length; i++) {
       const p = projected[i];
-      const pRadius = Math.max(1.2, 2.4 * (p.z + radius) / (2 * radius));
+      const pRadius = Math.max(1.2, 2.5 * (p.z + radius) / (2 * radius));
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, pRadius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(180, 160, 255, ${p.alpha * 0.9})`;
-      ctx.shadowColor = "#9b6cf8";
-      ctx.shadowBlur = 8;
+      ctx.fillStyle = `rgba(91, 33, 182, ${p.alpha * 0.85})`;
+      ctx.shadowColor = "rgba(109, 40, 217, 0.4)";
+      ctx.shadowBlur = 6;
       ctx.fill();
       ctx.shadowBlur = 0;
     }
@@ -135,7 +135,7 @@ function initOrbCanvas() {
 }
 
 // ------------------------------------------------------------
-// 2. Interactive Voice Simulator
+// 2. Interactive Voice Simulator (Light Cream Styled)
 // ------------------------------------------------------------
 const SIM_COMMANDS = {
   set_volume: {
@@ -167,29 +167,29 @@ const SIM_COMMANDS = {
       { icon: "⌨️", text: "Typed 'hi' into 'Type a message' box" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 480px; background: #111b21; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: sans-serif;">
-        <div style="background: #202c33; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: #00a884; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 13px;">V</div>
+      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(80,60,40,0.12); box-shadow: var(--shadow-md); font-family: sans-serif;">
+        <div style="background: #f0ebe1; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(80,60,40,0.08);">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: #059669; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 13px;">V</div>
           <div>
-            <div style="color: #e9edef; font-size: 13px; font-weight: 600;">Vaishu</div>
-            <div style="color: #8696a0; font-size: 11px;">online • Selected by Handless</div>
+            <div style="color: #1c1917; font-size: 13px; font-weight: 700;">Vaishu</div>
+            <div style="color: #78716c; font-size: 11px;">online • Handless Selected Target</div>
           </div>
         </div>
-        <div style="height: 140px; padding: 12px; background: #0b141a; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;">
-          <div style="align-self: flex-start; background: #202c33; color: #e9edef; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%;">
+        <div style="height: 130px; padding: 12px; background: #faf7f2; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;">
+          <div style="align-self: flex-start; background: #ffffff; color: #1c1917; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; border: 1px solid rgba(80,60,40,0.08);">
             Hey, are we still meeting today?
           </div>
-          <div style="align-self: flex-end; background: #005c4b; color: #e9edef; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 4px;">
-            <span>hi</span>
-            <span style="font-size: 9px; opacity: 0.6; margin-left: 4px;">Just now ✓✓</span>
+          <div style="align-self: flex-end; background: #d1fae5; color: #065f46; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 4px; border: 1px solid #a7f3d0;">
+            <span style="font-weight: 600;">hi</span>
+            <span style="font-size: 9px; opacity: 0.7; margin-left: 4px;">Just now ✓✓</span>
           </div>
         </div>
-        <div style="background: #202c33; padding: 8px 12px; display: flex; align-items: center; gap: 8px;">
-          <div style="flex: 1; background: #2a3942; border-radius: 8px; padding: 6px 12px; color: #e9edef; font-size: 12px; display: flex; align-items: center;">
-            <span style="opacity: 0.4;">Type a message</span>
-            <span style="width: 2px; height: 14px; background: #00a884; margin-left: 2px; animation: pulse 1s infinite;"></span>
+        <div style="background: #ffffff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(80,60,40,0.08);">
+          <div style="flex: 1; background: #f5f0e8; border-radius: 8px; padding: 6px 12px; color: #1c1917; font-size: 12px; display: flex; align-items: center;">
+            <span style="opacity: 0.6;">Type a message</span>
+            <span style="width: 2px; height: 14px; background: #059669; margin-left: 2px; animation: pulse 1s infinite;"></span>
           </div>
-          <div style="color: #8696a0; font-size: 16px;">🎤</div>
+          <div style="color: #78716c; font-size: 16px;">🎤</div>
         </div>
       </div>
     `
@@ -204,15 +204,15 @@ const SIM_COMMANDS = {
       { icon: "⚡", text: "Dispatched hotkey: Win + Left" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 480px; height: 210px; background: #161922; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px;">
-        <div style="background: rgba(147, 112, 219, 0.15); border: 2px solid #9b6cf8; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-          <div style="font-size: 24px;">🪟</div>
-          <span style="font-size: 12px; font-weight: 700; color: #c4b5fd;">Chrome (Snapped 50% Left)</span>
-          <span style="font-size: 10px; color: #959cb3;">Bounds: (0, 0, 960, 1080)</span>
+      <div style="width: 100%; max-width: 460px; height: 200px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(80,60,40,0.12); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; box-shadow: var(--shadow-md);">
+        <div style="background: #ede9fe; border: 2px solid #6d28d9; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
+          <div style="font-size: 22px;">🪟</div>
+          <span style="font-size: 12px; font-weight: 700; color: #5b21b6;">Chrome (Snapped 50% Left)</span>
+          <span style="font-size: 10px; color: #78716c;">Bounds: (0, 0, 960, 1080)</span>
         </div>
-        <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.15); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;">
-          <span style="font-size: 11px; color: #656b82;">Desktop / Snap Assist</span>
-          <span style="font-size: 9px; color: #656b82;">Choose secondary app</span>
+        <div style="background: #faf7f2; border: 1px dashed rgba(80,60,40,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+          <span style="font-size: 11px; font-weight: 600; color: #78716c;">Desktop / Snap Assist</span>
+          <span style="font-size: 9px; color: #a8a29e;">Choose secondary app</span>
         </div>
       </div>
     `
@@ -227,19 +227,19 @@ const SIM_COMMANDS = {
       { icon: "🧠", text: "Gemini Vision parsed stacktrace in 420ms" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 480px; background: #0c0d14; border-radius: 12px; border: 1px solid rgba(0,210,255,0.4); padding: 16px; box-shadow: 0 0 25px rgba(0,210,255,0.15); font-family: monospace;">
+      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(109,40,217,0.3); padding: 16px; box-shadow: var(--shadow-md); font-family: monospace;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-          <span style="color: #ff5f56; font-size: 12px; font-weight: bold;">● TypeError: Cannot read property 'map' of undefined</span>
-          <span style="font-size: 10px; padding: 2px 6px; background: rgba(0,210,255,0.15); color: #00d2ff; border-radius: 4px;">Screen Lens OCR</span>
+          <span style="color: #dc2626; font-size: 12px; font-weight: bold;">● TypeError: Cannot read property 'map' of undefined</span>
+          <span style="font-size: 10px; padding: 2px 6px; background: #ede9fe; color: #6d28d9; border-radius: 4px; font-weight: bold;">Screen Lens OCR</span>
         </div>
-        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 6px; font-size: 11px; color: #959cb3; margin-bottom: 12px; border-left: 2px solid #ff5f56;">
+        <div style="background: #f5f0e8; padding: 8px 10px; border-radius: 6px; font-size: 11px; color: #44403c; margin-bottom: 12px; border-left: 3px solid #dc2626;">
           at UserList (components/Users.tsx:42:15)<br>
           at renderWithHooks (react-dom.development.js:16305)
         </div>
-        <div style="background: rgba(0,210,255,0.08); border-radius: 6px; padding: 10px; font-size: 12px; color: #e2e8f0; font-family: var(--font-sans); border: 1px solid rgba(0,210,255,0.2);">
-          <strong style="color: #00d2ff;">💡 Handless AI Explanation:</strong>
-          <p style="margin-top: 4px; font-size: 11px; color: #cbd5e1; line-height: 1.4;">
-            Your <code style="color: #c4b5fd;">users</code> state variable is initially <code style="color: #c4b5fd;">undefined</code> before the API request completes. Change line 42 to <code style="color: #38ef7d;">users?.map(...)</code> or provide default value <code style="color: #38ef7d;">[]</code>.
+        <div style="background: #faf5ff; border-radius: 6px; padding: 10px; font-size: 12px; color: #1c1917; font-family: var(--font-sans); border: 1px solid #ddd6fe;">
+          <strong style="color: #6d28d9;">💡 Handless AI Solution:</strong>
+          <p style="margin-top: 4px; font-size: 11px; color: #44403c; line-height: 1.45;">
+            Your <code style="color: #5b21b6; background: #ede9fe; padding: 1px 4px; border-radius: 3px;">users</code> state variable is <code style="color: #5b21b6;">undefined</code> prior to fetch completion. Update line 42 to <code style="color: #059669; font-weight: bold;">users?.map(...)</code> or initialize state as <code style="color: #059669; font-weight: bold;">[]</code>.
           </p>
         </div>
       </div>
@@ -256,13 +256,13 @@ const SIM_COMMANDS = {
       { icon: "🚀", text: "F8 released: Typed 14 words in 68ms" }
     ],
     render: () => `
-      <div style="width: 100%; max-width: 480px; background: #13151f; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);">
-          <span style="font-size: 12px; font-weight: 700; color: #e2e8f0;">Active Document — Notepad</span>
-          <span style="font-size: 10px; padding: 2px 8px; background: rgba(56, 239, 125, 0.15); color: #38ef7d; border-radius: 10px; font-weight: 600;">Sub-100ms Realtime</span>
+      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(80,60,40,0.12); padding: 18px; box-shadow: var(--shadow-md);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(80,60,40,0.08);">
+          <span style="font-size: 12px; font-weight: 700; color: #1c1917;">Active Document — WordPad</span>
+          <span style="font-size: 10px; padding: 2px 8px; background: #ecfdf5; color: #047857; border-radius: 10px; font-weight: 700;">Sub-100ms Realtime</span>
         </div>
-        <p style="font-size: 14px; line-height: 1.6; color: #f0f2f8; font-family: serif;">
-          The market response to autonomous desktop workflows has exceeded our expectations. By combining native OS accessibility with speculative transcription, Handless completely eliminates friction<span style="display: inline-block; width: 2px; height: 16px; background: #9b6cf8; vertical-align: middle; margin-left: 2px; animation: pulse 0.8s infinite;"></span>
+        <p style="font-size: 13.5px; line-height: 1.6; color: #292524; font-family: serif;">
+          The market response to autonomous desktop workflows has exceeded our expectations. By combining native OS accessibility with speculative transcription, Handless completely eliminates friction<span style="display: inline-block; width: 2px; height: 16px; background: #6d28d9; vertical-align: middle; margin-left: 2px; animation: pulse 0.8s infinite;"></span>
         </p>
       </div>
     `
@@ -289,13 +289,11 @@ function initVoiceSimulator() {
       const cmd = SIM_COMMANDS[cmdKey];
       if (!cmd) return;
 
-      // Update UI elements
       if (simTitle) simTitle.textContent = cmd.title;
       if (simTierBadge) simTierBadge.textContent = cmd.tier;
       if (simActionState) simActionState.textContent = cmd.state;
       if (simTranscript) simTranscript.textContent = cmd.transcript;
 
-      // Update Action Logs
       if (simActionLog) {
         simActionLog.innerHTML = cmd.logs
           .map(log => `
@@ -307,7 +305,6 @@ function initVoiceSimulator() {
           .join("");
       }
 
-      // Update Canvas Stage
       stagePlaceholder.innerHTML = cmd.render();
     });
   });
@@ -325,11 +322,7 @@ function initFaqAccordion() {
 
     btn.addEventListener("click", () => {
       const isActive = item.classList.contains("active");
-
-      // Close all other items
       faqItems.forEach(other => other.classList.remove("active"));
-
-      // Toggle clicked item
       if (!isActive) {
         item.classList.add("active");
       }
@@ -350,7 +343,7 @@ function copyCode() {
     if (copyBtn) {
       const originalText = copyBtn.innerText;
       copyBtn.innerText = "Copied!";
-      copyBtn.style.background = "#10b981";
+      copyBtn.style.background = "#059669";
       copyBtn.style.color = "#fff";
 
       setTimeout(() => {
@@ -364,7 +357,6 @@ function copyCode() {
   });
 }
 
-// Expose copyCode globally for onclick handler in HTML
 window.copyCode = copyCode;
 
 // ------------------------------------------------------------
@@ -425,7 +417,6 @@ function initMobileSupport() {
   downloadTriggers.forEach(btn => {
     btn.addEventListener("click", (e) => {
       if (isMobile || isAndroid) {
-        // Intercept download and show friendly guidance modal
         e.preventDefault();
         if (modal) {
           modal.classList.add("open");
@@ -450,15 +441,17 @@ function initMobileSupport() {
   // Copy Desktop Link Handler
   if (btnCopyDesktop) {
     btnCopyDesktop.addEventListener("click", () => {
-      const url = "https://github.com/vyomagroupofficial-lab/handless/releases";
+      const url = "https://handless.vyomagroup.online/downloads/VyomaHandless-v0.1.0-windows-x64.zip";
       navigator.clipboard.writeText(url).then(() => {
         const originalText = btnCopyDesktop.innerText;
-        btnCopyDesktop.innerText = "✓ Link Copied to Clipboard!";
-        btnCopyDesktop.style.background = "#10b981";
+        btnCopyDesktop.innerText = "✓ Direct PC Link Copied!";
+        btnCopyDesktop.style.background = "#059669";
+        btnCopyDesktop.style.color = "#ffffff";
 
         setTimeout(() => {
           btnCopyDesktop.innerText = originalText;
           btnCopyDesktop.style.background = "";
+          btnCopyDesktop.style.color = "";
         }, 2500);
       }).catch(err => {
         console.error("Failed to copy link:", err);
@@ -466,5 +459,3 @@ function initMobileSupport() {
     });
   }
 }
-
-

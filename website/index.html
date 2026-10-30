@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vyoma Handless™ — Your Desktop, Without Hands</title>
-  <meta name="description" content="Modern voice-first AI copilot for Windows 11. Speculative streaming dictation with sub-100ms latency, real-time screen vision, true web DOM piercing, and native hardware automation.">
+  <meta name="description" content="Voice-first desktop AI copilot for Windows 11 & 10. Speculative streaming dictation with sub-100ms latency, real-time screen vision, true web DOM piercing, and native hardware automation.">
   <meta name="keywords" content="voice assistant, desktop automation, windows 11, whisper large v3, gemini flash, speculative dictation, screen lens, hands-free, open source">
   
   <!-- OpenGraph / Social Metadata -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://github.com/vyomagroupofficial-lab/handless">
+  <meta property="og:url" content="https://handless.vyomagroup.online">
   <meta property="og:title" content="Vyoma Handless™ — Your Desktop, Without Hands">
-  <meta property="og:description" content="Modern voice-first AI copilot for Windows 11 with speculative streaming dictation, screen vision, and native hardware automation.">
+  <meta property="og:description" content="Voice-first desktop AI copilot for Windows 11 & 10 with speculative streaming dictation, screen vision, and native hardware automation.">
   <meta property="og:image" content="assets/logo.png">
 
   <!-- Fonts & Icons -->
@@ -28,7 +28,7 @@
     <div class="mobile-banner-content">
       <span class="banner-icon">💻</span>
       <div class="banner-text">
-        <strong>Windows 11 / 10 Desktop Application:</strong> Handless runs natively on Windows PCs and is <u>not available for Android or mobile OSes</u>. You can explore all features & docs below!
+        <strong>Windows 11 / 10 Desktop Application:</strong> Handless is engineered for Windows PCs and is <u>not available on Android or mobile devices</u>. You can browse all features & docs below!
       </div>
       <button class="banner-close" id="bannerClose" aria-label="Dismiss">&times;</button>
     </div>
@@ -39,7 +39,7 @@
   <div class="ambient-glow glow-2"></div>
   <div class="ambient-glow glow-3"></div>
 
-  <!-- Navigation Bar -->
+  <!-- Boxed Navigation Bar -->
   <header class="navbar">
     <div class="nav-container">
       <a href="#" class="brand">
@@ -52,7 +52,6 @@
         <a href="#features">Features</a>
         <a href="#demo">Live Demo</a>
         <a href="#benchmarks">Benchmarks</a>
-        <a href="#architecture">Architecture</a>
         <a href="#download">Download</a>
         <a href="#faq">FAQ</a>
       </nav>
@@ -92,83 +91,86 @@
     </div>
   </header>
 
-  <!-- Hero Section -->
+  <!-- Boxed Hero Section -->
   <section class="hero-section">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="pulse-dot"></span>
-        <span>Windows 11 Native Copilot • Powered by Groq Whisper & Gemini</span>
-      </div>
+    <div class="hero-box">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span>Windows 11 Native Copilot • Powered by Groq Whisper & Gemini</span>
+        </div>
 
-      <h1 class="hero-title">
-        Your desktop,<br>
-        <span class="gradient-text">without hands.</span>
-      </h1>
+        <h1 class="hero-title">
+          Your desktop,<br>
+          <span class="gradient-text">without hands.</span>
+        </h1>
 
-      <p class="hero-subtitle">
-        Speak naturally. Handless understands your screen, navigates web DOM trees, streams speculative dictation in sub-100ms, and executes native Windows hardware actions without fragile mouse coordinates.
-      </p>
+        <p class="hero-subtitle">
+          Speak naturally. Handless understands your screen, navigates web DOM trees, streams speculative dictation in sub-100ms, and executes native Windows hardware actions without fragile mouse coordinates.
+        </p>
 
-      <div class="hero-cta">
-        <a href="#download" class="btn btn-hero-download download-trigger">
-          <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-          </svg>
-          <div>
-            <span class="cta-title">Download for Windows</span>
-            <span class="cta-sub">Windows 11 / 10 (64-bit) • Desktop Only</span>
+        <div class="hero-cta">
+          <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download class="btn btn-hero-download download-trigger">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            <div>
+              <span class="cta-title">Download for Windows</span>
+              <span class="cta-sub">Windows 11 / 10 (64-bit) • Portable Release</span>
+            </div>
+          </a>
+          <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-hero-source">
+            <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 18 22 12 16 6"/>
+              <polyline points="8 6 2 12 8 18"/>
+            </svg>
+            <div>
+              <span class="cta-title">Explore Source Code</span>
+              <span class="cta-sub">304 Tests Passing • MIT License</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="hero-platform-disclaimer">
+          <span>⚠️ Handless is engineered specifically for Windows desktop PCs. Not supported on Android or mobile phones.</span>
+        </div>
+
+        <!-- Quick Stats Pills -->
+        <div class="hero-metrics">
+          <div class="metric-pill">
+            <span class="metric-val">&lt;100ms</span>
+            <span class="metric-label">Perceived Dictation Latency</span>
           </div>
-        </a>
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-hero-source">
-          <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="16 18 22 12 16 6"/>
-            <polyline points="8 6 2 12 8 18"/>
-          </svg>
-          <div>
-            <span class="cta-title">Explore Source Code</span>
-            <span class="cta-sub">304 Tests Passing • MIT License</span>
+          <div class="metric-divider"></div>
+          <div class="metric-pill">
+            <span class="metric-val">3-Tier</span>
+            <span class="metric-label">Hybrid Routing (Local + Cloud)</span>
           </div>
-        </a>
-      </div>
-      <div class="hero-platform-disclaimer">
-        <span>⚠️ Handless is engineered specifically for Windows desktop PCs. Not supported on Android or mobile devices.</span>
+          <div class="metric-divider"></div>
+          <div class="metric-pill">
+            <span class="metric-val">100%</span>
+            <span class="metric-label">Native Hardware & UIA Integration</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Quick Stats Pills -->
-      <div class="hero-metrics">
-        <div class="metric-pill">
-          <span class="metric-val">&lt;100ms</span>
-          <span class="metric-label">Perceived Dictation Latency</span>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric-pill">
-          <span class="metric-val">3-Tier</span>
-          <span class="metric-label">Hybrid Routing (Local + Cloud)</span>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric-pill">
-          <span class="metric-val">100%</span>
-          <span class="metric-label">Native Hardware & UIA Integration</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Interactive Canvas Visualizer -->
-    <div class="hero-visual">
-      <div class="orb-container">
-        <canvas id="orbCanvas" width="380" height="380"></canvas>
-        <div class="floating-bot-card">
-          <img src="assets/logo.png" alt="Handless Bot" class="bot-avatar">
-          <div class="bot-info">
-            <span class="bot-name">Handless Assistant</span>
-            <span class="bot-status"><span class="status-live"></span> Listening at 16kHz...</span>
+      <!-- Interactive Canvas Visualizer Box -->
+      <div class="hero-visual">
+        <div class="orb-container">
+          <canvas id="orbCanvas" width="360" height="360"></canvas>
+          <div class="floating-bot-card">
+            <img src="assets/logo.png" alt="Handless Bot" class="bot-avatar">
+            <div class="bot-info">
+              <span class="bot-name">Handless Assistant</span>
+              <span class="bot-status"><span class="status-live"></span> Listening at 16kHz...</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Live Simulator Section -->
+  <!-- Boxed Interactive Live Simulator Section -->
   <section id="demo" class="demo-section">
     <div class="section-header">
       <span class="section-tag">Interactive Playground</span>
@@ -176,7 +178,7 @@
       <p class="section-desc">Click any voice command pill below to simulate how Handless routes intents, inspects elements, and manipulates Windows without touching the mouse.</p>
     </div>
 
-    <div class="simulator-wrapper">
+    <div class="simulator-box">
       <div class="simulator-controls">
         <span class="controls-label">Test Voice Commands:</span>
         <button class="cmd-pill active" data-cmd="set_volume">"Set my volume to 80%"</button>
@@ -213,8 +215,12 @@
                 </div>
                 <div class="sim-action-log" id="simActionLog">
                   <div class="log-entry">
+                    <span class="log-icon">⚡</span>
+                    <span class="log-text">Matched Rule: SetVolume(80)</span>
+                  </div>
+                  <div class="log-entry">
                     <span class="log-icon">🔊</span>
-                    <span class="log-text">Master Volume: 80%</span>
+                    <span class="log-text">IAudioEndpointVolume: 0.80 applied</span>
                   </div>
                 </div>
               </div>
@@ -227,7 +233,7 @@
                   <div class="hud-slider-track">
                     <div class="hud-slider-fill" id="hudSliderFill" style="width: 80%;"></div>
                   </div>
-                  <span class="hud-label" id="hudLabel">🔊 Volume Adjusted to 80%</span>
+                  <span class="hud-label" id="hudLabel">🔊 Master Volume Adjusted to 80%</span>
                 </div>
               </div>
             </div>
@@ -237,7 +243,7 @@
     </div>
   </section>
 
-  <!-- Feature Grid Section -->
+  <!-- Boxed Feature Grid Section -->
   <section id="features" class="features-section">
     <div class="section-header">
       <span class="section-tag">Next-Gen Capabilities</span>
@@ -353,7 +359,7 @@
     </div>
   </section>
 
-  <!-- Benchmarks Section -->
+  <!-- Boxed Benchmarks Section -->
   <section id="benchmarks" class="benchmarks-section">
     <div class="section-header">
       <span class="section-tag">Real-World Performance</span>
@@ -361,64 +367,66 @@
       <p class="section-desc">See how Vyoma Handless compares against traditional speech engines and cloud desktop assistants.</p>
     </div>
 
-    <div class="table-container">
-      <table class="benchmark-table">
-        <thead>
-          <tr>
-            <th>Capability / Benchmark</th>
-            <th class="highlight-col">Vyoma Handless™</th>
-            <th>Traditional Voice Assistants</th>
-            <th>Generic Cloud STT</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Perceived Dictation Latency</strong></td>
-            <td class="highlight-col"><span class="badge-fast">&lt; 100ms</span> (Speculative)</td>
-            <td>1,200ms – 2,500ms</td>
-            <td>1,800ms+</td>
-          </tr>
-          <tr>
-            <td><strong>Windows Hardware Control</strong></td>
-            <td class="highlight-col">Direct Native WMI / COM (Volume, Brightness, Power)</td>
-            <td>Limited or Simulated Keyboard Shortcuts</td>
-            <td>None (Speech only)</td>
-          </tr>
-          <tr>
-            <td><strong>Web Browser Automation</strong></td>
-            <td class="highlight-col">Chromium Accessibility + CDP Bridge</td>
-            <td>Blind Coordinates / OCR only</td>
-            <td>None</td>
-          </tr>
-          <tr>
-            <td><strong>Screen Understanding</strong></td>
-            <td class="highlight-col">Multimodal Gemini 2.5 Flash + Screen Lens</td>
-            <td>None</td>
-            <td>None</td>
-          </tr>
-          <tr>
-            <td><strong>Offline Capability</strong></td>
-            <td class="highlight-col">100% Offline Whisper Base int8 (Sherpa-ONNX)</td>
-            <td>Proprietary Cloud Required</td>
-            <td>Cloud API Only</td>
-          </tr>
-          <tr>
-            <td><strong>License & Source</strong></td>
-            <td class="highlight-col">100% Free & Open-Source (MIT)</td>
-            <td>Closed / Proprietary</td>
-            <td>Paid API Tokens</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="benchmarks-box">
+      <div class="table-container">
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Capability / Benchmark</th>
+              <th class="highlight-col">Vyoma Handless™</th>
+              <th>Traditional Voice Assistants</th>
+              <th>Generic Cloud STT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Perceived Dictation Latency</strong></td>
+              <td class="highlight-col"><span class="badge-fast">&lt; 100ms</span> (Speculative)</td>
+              <td>1,200ms – 2,500ms</td>
+              <td>1,800ms+</td>
+            </tr>
+            <tr>
+              <td><strong>Windows Hardware Control</strong></td>
+              <td class="highlight-col">Direct Native WMI / COM (Volume, Brightness, Power)</td>
+              <td>Limited or Simulated Keyboard Shortcuts</td>
+              <td>None (Speech only)</td>
+            </tr>
+            <tr>
+              <td><strong>Web Browser Automation</strong></td>
+              <td class="highlight-col">Chromium Accessibility + CDP Bridge</td>
+              <td>Blind Coordinates / OCR only</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td><strong>Screen Understanding</strong></td>
+              <td class="highlight-col">Multimodal Gemini 2.5 Flash + Screen Lens</td>
+              <td>None</td>
+              <td>None</td>
+            </tr>
+            <tr>
+              <td><strong>Offline Capability</strong></td>
+              <td class="highlight-col">100% Offline Whisper Base int8 (Sherpa-ONNX)</td>
+              <td>Proprietary Cloud Required</td>
+              <td>Cloud API Only</td>
+            </tr>
+            <tr>
+              <td><strong>License & Source</strong></td>
+              <td class="highlight-col">100% Free & Open-Source (MIT)</td>
+              <td>Closed / Proprietary</td>
+              <td>Paid API Tokens</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
-  <!-- Download & Quickstart Section -->
+  <!-- Boxed Download & Quickstart Section -->
   <section id="download" class="download-section">
-    <div class="download-card">
+    <div class="download-box">
       <div class="download-badge">Official Release • v0.1.0-beta</div>
       <h2 class="download-title">Get Started With Handless</h2>
-      <p class="download-desc">Choose between the standalone portable Windows release or installing directly via Python in your development environment.</p>
+      <p class="download-desc">Choose between downloading the standalone portable Windows release or installing directly via Python in your development environment.</p>
 
       <div class="download-options">
         <div class="option-box">
@@ -428,7 +436,7 @@
             <p>Single portable package with Python runtime, PySide6 UI, and vector icons bundled.</p>
           </div>
           <div class="option-action">
-            <a href="https://github.com/vyomagroupofficial-lab/handless/releases" target="_blank" class="btn btn-download-primary download-trigger">
+            <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download class="btn btn-download-primary download-trigger">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
               </svg>
@@ -462,93 +470,71 @@ python -m handless.app</code></pre>
     </div>
   </section>
 
-  <!-- FAQ Section -->
+  <!-- Boxed FAQ Section -->
   <section id="faq" class="faq-section">
     <div class="section-header">
       <span class="section-tag">Got Questions?</span>
       <h2 class="section-title">Frequently Asked Questions</h2>
     </div>
 
-    <div class="faq-list">
-      <div class="faq-item active">
-        <button class="faq-question">
-          <span>Does Handless require a paid API key to work?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          <p>No! Handless includes a 100% offline speech recognition engine (Sherpa-ONNX int8 Whisper Base) and local regex rules that operate entirely on your CPU without any internet connection. You can optionally add a free Groq API key (for cloud Whisper Large v3) and a free Google Gemini key (for Screen Lens & Gemini Live) directly in Settings.</p>
+    <div class="faq-box">
+      <div class="faq-list">
+        <div class="faq-item active">
+          <button class="faq-question">
+            <span>Does Handless require a paid API key to work?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>No! Handless includes a 100% offline speech recognition engine (Sherpa-ONNX int8 Whisper Base) and local regex rules that operate entirely on your CPU without any internet connection. You can optionally add a free Groq API key (for cloud Whisper Large v3) and a free Google Gemini key (for Screen Lens & Gemini Live) directly in Settings.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <button class="faq-question">
-          <span>How does Wispr Flow speculative dictation work?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          <p>While you hold <kbd>F8</kbd>, Handless buffers your live microphone stream into small 200ms audio frames. As soon as you finish a phrase, it pre-transcribes the audio in parallel background threads. When you release <kbd>F8</kbd>, the text is already transcribed, resulting in instantaneous sub-100ms text typing into your active application.</p>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I run Vyoma Handless on Android, iOS, or Mac?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p><strong>Handless is currently exclusive to Windows 11 and Windows 10 (64-bit).</strong> It deeply hooks into native Windows OS subsystems including Windows UIAutomation (UIA COM), Core Audio Endpoint APIs, WMI display brightness controls, and Win32 window management hooks. Because these low-level APIs do not exist on Android or iOS, Handless cannot run on mobile devices. You can read all documentation and watch demos here on your phone, then download Handless on your Windows PC!</p>
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <button class="faq-question">
-          <span>How do I stop an accidental voice action?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          <p>Handless has a hardware-level Emergency Stop built-in. Press <kbd>Ctrl + Shift + Q</kbd> (or tap <kbd>Escape</kbd> twice) at any time to instantly kill all in-flight mouse, keyboard, and window automation tasks.</p>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How does Wispr Flow speculative dictation work?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>While you hold <kbd>F8</kbd>, Handless buffers your live microphone stream into small 200ms audio frames. As soon as you finish a phrase, it pre-transcribes the audio in parallel background threads. When you release <kbd>F8</kbd>, the text is already transcribed, resulting in instantaneous sub-100ms text typing into your active application.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <button class="faq-question">
-          <span>Can I run Vyoma Handless on Android, iOS, or Mac?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          <p><strong>Handless is currently exclusive to Windows 11 and Windows 10 (64-bit).</strong> It deeply hooks into native Windows OS subsystems including Windows UIAutomation (UIA COM), Core Audio Endpoint APIs, WMI display brightness controls, and Win32 window management hooks. Because these low-level APIs do not exist on Android or iOS, Handless cannot run on mobile devices. You can read all documentation and watch demos here on your phone, then download Handless on your Windows PC!</p>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>How do I stop an accidental voice action?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Handless has a hardware-level Emergency Stop built-in. Press <kbd>Ctrl + Shift + Q</kbd> (or tap <kbd>Escape</kbd> twice) at any time to instantly kill all in-flight mouse, keyboard, and window automation tasks.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="faq-item">
-        <button class="faq-question">
-          <span>Can I contribute or add custom voice workflows?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-answer">
-          <p>Yes! Handless includes a Macro Recorder (`"start macro recording"`) to record your own keystrokes and clicks into voice macros. Developers can also easily add new patterns to `LocalRuleParser` or build native Python plugins.</p>
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can I contribute or add custom voice workflows?</span>
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes! Handless includes a Macro Recorder (`"start macro recording"`) to record your own keystrokes and clicks into voice macros. Developers can also easily add new patterns to `LocalRuleParser` or build native Python plugins.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Mobile Download Info Modal -->
-  <div class="modal-backdrop" id="mobileModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <span class="modal-badge">⚠️ Windows PC Only</span>
-        <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-      </div>
-      <h3 class="modal-title">Not Compatible With Android</h3>
-      <p class="modal-desc">
-        Vyoma Handless is a native 64-bit Windows software package (.exe) designed for Windows 11 / 10 PCs. It cannot run or install on Android phones or tablets.
-      </p>
-      <div class="modal-tip">
-        💡 <strong>Tip:</strong> Copy the download link to send to your PC via WhatsApp/Email, or star our GitHub repo so you can find it later on your desktop.
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-primary w-full" id="btnCopyDesktopLink">📋 Copy PC Download Link</button>
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github w-full">⭐ Star On GitHub</a>
-      </div>
-      <div class="modal-footer-link">
-        <a href="https://github.com/vyomagroupofficial-lab/handless/releases" target="_blank">Download file anyway (to transfer to PC)</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
+  <!-- Boxed Footer -->
   <footer class="footer">
-    <div class="footer-container">
+    <div class="footer-box">
       <div class="footer-brand">
         <div class="brand">
           <img src="assets/logo.png" alt="Vyoma Handless" class="brand-logo">
@@ -576,7 +562,30 @@ python -m handless.app</code></pre>
     </div>
   </footer>
 
+  <!-- Mobile Download Info Modal -->
+  <div class="modal-backdrop" id="mobileModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-badge">⚠️ Windows PC Only</span>
+        <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
+      </div>
+      <h3 class="modal-title">Not Compatible With Android</h3>
+      <p class="modal-desc">
+        Vyoma Handless is a native 64-bit Windows software package (.exe) designed for Windows 11 / 10 PCs. It cannot run or install on Android phones or tablets.
+      </p>
+      <div class="modal-tip">
+        💡 <strong>Tip:</strong> Copy the download link to send to your PC via WhatsApp/Email, or star our GitHub repo so you can find it later on your desktop.
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-primary w-full" id="btnCopyDesktopLink">📋 Copy PC Download Link</button>
+        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github w-full">⭐ Star On GitHub</a>
+      </div>
+      <div class="modal-footer-link">
+        <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download>Download file anyway (to transfer to PC)</a>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
-

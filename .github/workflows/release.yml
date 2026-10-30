@@ -1,0 +1,70 @@
+name: Release Standalone Windows Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    name: Build & Publish Windows Executable
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Build Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+          pip install pyinstaller
+
+      - name: Run Pytest Verification
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          pytest -q
+
+      - name: Build Standalone Windows Executable
+        run: |
+          python scripts/build_release.py
+
+      - name: Create GitHub Release & Upload Asset
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            dist/VyomaHandless-*.zip
+          name: Vyoma Handless ${{ github.ref_name }} (Windows 11 / 10 64-bit)
+          body: |
+            ## 🚀 Vyoma Handless™ — ${{ github.ref_name }}
+
+            The voice-first AI copilot for Windows 11 & 10.
+
+            ### 🌟 Key Capabilities
+            - **Sub-100ms Wispr Flow Speculative Streaming**: Hold `F8` to dictate; text appears instantaneously at your cursor.
+            - **True Web DOM Piercing**: Directly traverses Chromium accessibility and CDP on `localhost:9222`.
+            - **Native Hardware Control**: Adjust master volume, display brightness, power states, and window snapping without third-party drivers.
+            - **Multimodal Screen Lens**: `Win + Shift + Space` instantly analyzes your screen with Gemini 2.5 Flash.
+            - **Desktop Element Inspector**: Snaps crosshairs to UI controls with 3-tier resilient locators.
+            - **Gemini Live Voice Call**: Bidirectional low-latency spoken conversations with a 3D thinking orb.
+
+            ### 📦 Standalone Portable Installation
+            1. Download `VyomaHandless-${{ github.ref_name }}-windows-x64.zip` below.
+            2. Extract the archive to any folder on your Windows PC.
+            3. Run `VyomaHandless.exe`.
+
+            > **Note**: Designed exclusively for Windows 11 / 10 (64-bit). Not compatible with Android or iOS.
+          draft: false
+          prerelease: true
