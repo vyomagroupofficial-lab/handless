@@ -68,3 +68,4 @@ jobs:
             > **Note**: Designed exclusively for Windows 11 / 10 (64-bit). Not compatible with Android or iOS.
           draft: false
           prerelease: true
+
