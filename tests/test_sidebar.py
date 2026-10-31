@@ -155,9 +155,10 @@ def test_sidebar_revamp_components(qapp):
 
     # 5. Recent Activity Feed
     recent = RecentActivityWidget()
-    assert recent.items_layout.count() >= 4
+    assert recent.empty_label is not None
     recent.add_recent("Opened YouTube", "Just now", "open youtube")
-    assert recent.items_layout.count() >= 5
+    assert recent.empty_label is None
+    assert recent.items_layout.count() == 1
 
     # 6. Bottom Status Pill
     modes = []

@@ -1,0 +1,17 @@
+Welcome to Vyoma Handless
+
+Handless lets you control your Windows PC with your voice. Here is exactly what it will use, so there are no surprises:
+
+  MICROPHONE
+  To hear your commands and dictation. Audio is captured only while you hold a shortcut (Ctrl + Space, or Ctrl + Shift to dictate). After installing, the setup screen checks the Windows microphone privacy switch for you and runs a quick test.
+
+  SCREEN & UI AUTOMATION
+  To find buttons and text fields when you ask it to click or type. Handless uses the built-in Windows UI Automation service. Nothing is recorded in the background.
+
+  WINDOWS CREDENTIAL MANAGER
+  Your optional Groq and Gemini API keys are stored here, encrypted by Windows. They are never written to a plain file.
+
+  START WITH WINDOWS (optional)
+  If you choose it, Handless starts quietly as a small floating button when you sign in.
+
+No administrator rights are needed. Handless installs for your Windows account only, and you can uninstall it any time from Settings > Apps.

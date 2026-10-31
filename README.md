@@ -15,7 +15,7 @@
   <img src="https://img.shields.io/badge/UI-PySide6%20Qt%20Acrylic-41CD52?logo=qt" alt="PySide6 Qt" />
   <img src="https://img.shields.io/badge/STT-Groq%20Whisper%20Large%20v3-F05032" alt="Groq Whisper" />
   <img src="https://img.shields.io/badge/Intelligence-Gemini%202.5%20Flash%20%2B%20Groq%20Llama-4285F4?logo=google" alt="AI Models" />
-  <img src="https://img.shields.io/badge/Tests-304%20Passing-brightgreen" alt="Tests 304 Passing" />
+  <img src="https://img.shields.io/badge/Tests-310%20Passing-brightgreen" alt="Tests 310 Passing" />
   <img src="https://img.shields.io/badge/License-MIT-blue" alt="MIT License" />
 </p>
 
@@ -115,12 +115,26 @@ flowchart TD
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Install on Windows (recommended)
+
+1. Download **VyomaHandless-Setup.exe** from [handless.vyomagroup.online](https://handless.vyomagroup.online/#download) or the [latest GitHub release](https://github.com/vyomagroupofficial-lab/handless/releases/latest).
+2. Run it. No administrator rights are needed; it installs for your Windows account. If SmartScreen appears, choose **More info → Run anyway** (the installer is not code-signed yet).
+3. Handless opens a short first-run setup:
+   * **Microphone**: checks the Windows privacy switch, opens the right Settings page, and runs a live level test.
+   * **Screen & safety**: screenshot fallback and confirmations for risky actions.
+   * **AI keys** (optional): Groq and Gemini, stored in Windows Credential Manager.
+   * **Startup**: start quietly with Windows, choose the sidebar side.
+
+Offline speech recognition (Whisper Base int8) is bundled, so voice commands work without any API key. Run the setup again any time from the tray menu or the *Vyoma Handless Setup* Start-menu entry.
+
+### Run from source
+
+#### Prerequisites
 * Windows 11 or Windows 10 (64-bit)
 * Python 3.11 or 3.12
 * Working microphone
 
-### Installation
+#### Installation
 
 1. **Clone the repository:**
    ```powershell
@@ -164,11 +178,14 @@ flowchart TD
 
 | Hotkey | Action |
 |---|---|
-| `F8` *(Hold)* | **Wispr Flow Push-to-Talk Dictation** (Speculative pre-transcription) |
-| `Ctrl + Space` | **Toggle Handless Voice Bar / Modern Sidebar** |
+| `Ctrl + Space` *(Hold)* | **Push-to-talk command** (hold, speak, release) |
+| `Ctrl + Shift` *(Hold)* | **Wispr Flow Dictation** (speculative pre-transcription, typed at your cursor) |
 | `Win + Shift + Space` | **Screen Lens** (Universal visual screen QA) |
+| `Ctrl + Alt + H` | **Show / hide the sidebar** |
+| `Ctrl + Alt + D` | **Toggle dictation mode** |
+| `Ctrl + Alt + T` | **Rewrite selected text** |
+| `Ctrl + Alt + Z` | **Undo last AI edit / dictation** |
 | `Ctrl + Shift + Q` *(or double `Esc`)* | **Emergency Stop** (Instantly abort in-flight actions) |
-| `Ctrl + Shift + I` | **Desktop Element Inspector & Spy Tool** |
 
 ---
 
@@ -191,7 +208,7 @@ Handless includes a comprehensive test suite covering UIA tracking, system tools
 
 ```powershell
 pytest -q
-# Output: 304 passed in ~55s
+# Output: 310 passed in ~55s
 ```
 
 ---

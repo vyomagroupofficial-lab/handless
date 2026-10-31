@@ -2,626 +2,470 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Vyoma Handless™ — Your Desktop, Without Hands</title>
   <meta name="description" content="Voice-first desktop AI copilot for Windows 11 & 10. Speculative streaming dictation with sub-100ms latency, real-time screen vision, true web DOM piercing, and native hardware automation.">
   <meta name="keywords" content="voice assistant, desktop automation, windows 11, whisper large v3, gemini flash, speculative dictation, screen lens, hands-free, open source">
-  
+  <meta name="theme-color" content="#faf6ef">
+
   <!-- OpenGraph / Social Metadata -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://handless.vyomagroup.online">
   <meta property="og:title" content="Vyoma Handless™ — Your Desktop, Without Hands">
   <meta property="og:description" content="Voice-first desktop AI copilot for Windows 11 & 10 with speculative streaming dictation, screen vision, and native hardware automation.">
-  <meta property="og:image" content="assets/logo.png">
+  <meta property="og:image" content="https://handless.vyomagroup.online/assets/logo-512.png">
 
-  <!-- Fonts & Icons -->
+  <!-- Fonts (shared Vyoma family: Playfair Display + DM Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2.1">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="icon" type="image/png" href="assets/logo-96.png">
+  <link rel="apple-touch-icon" href="assets/logo-512.png">
 </head>
 <body>
 
-  <!-- Mobile / Android Device Banner Notice -->
-  <div class="mobile-device-banner" id="mobileDeviceBanner">
-    <div class="mobile-banner-content">
-      <span class="banner-icon">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-          <line x1="1" y1="21" x2="23" y2="21"/>
-        </svg>
-      </span>
-      <div class="banner-text">
-        <strong>Windows 11 / 10 Desktop Application:</strong> Handless is engineered for Windows PCs and is <u>not available on Android or mobile devices</u>. You can browse all features & docs below!
-      </div>
-      <button class="banner-close" id="bannerClose" aria-label="Dismiss">&times;</button>
-    </div>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Mobile-only notice (Handless is a Windows app) -->
+  <div class="device-notice" id="deviceNotice" hidden>
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    <p><strong>Windows PC app.</strong> Browse everything here, then download on your Windows 11 / 10 computer.</p>
+    <button class="device-notice-close" id="deviceNoticeClose" aria-label="Dismiss notice">&times;</button>
   </div>
 
-  <!-- Background Ambient Glow Orbs -->
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
-  <div class="ambient-glow glow-3"></div>
-
-  <!-- Boxed Navigation Bar -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a href="#" class="brand">
-        <img src="assets/logo.png" alt="Vyoma Handless Logo" class="brand-logo">
-        <span class="brand-name">handless<span class="brand-trademark">™</span></span>
-        <span class="badge-tag">v0.1.0-beta</span>
+  <!-- Navigation -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand" aria-label="Handless home">
+        <img src="assets/logo-96.png" alt="" width="34" height="34" class="brand-logo">
+        <span class="brand-name">Handless<sup>™</sup></span>
       </a>
 
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#demo">Live demo</a>
         <a href="#features">Features</a>
-        <a href="#demo">Live Demo</a>
+        <a href="#shortcuts">Shortcuts</a>
         <a href="#benchmarks">Benchmarks</a>
-        <a href="#download">Download</a>
         <a href="#faq">FAQ</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github">
-          <svg class="github-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-          </svg>
-          <span>Star on GitHub</span>
-          <span class="star-badge">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align: -1px; margin-right: 2px;">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </svg>
-            Open Source
-          </span>
+        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" rel="noopener" class="nav-github" aria-label="Handless on GitHub">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>GitHub</span>
         </a>
-        <a href="#download" class="btn btn-primary download-trigger">Download .exe</a>
-        <button class="mobile-toggle-btn" id="mobileToggleBtn" aria-label="Open Navigation">
-          <span class="bar"></span>
-          <span class="bar"></span>
-          <span class="bar"></span>
+        <span class="version-chip"><span class="dot"></span>v0.2.0</span>
+        <a href="#download" class="btn btn-dark btn-sm">Download</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+          <span></span><span></span>
         </button>
       </div>
     </div>
 
-    <!-- Mobile Drawer Menu -->
-    <div class="mobile-nav-drawer" id="mobileNavDrawer">
-      <div class="mobile-drawer-links">
-        <a href="#features" class="drawer-link">Features</a>
-        <a href="#demo" class="drawer-link">Live Demo</a>
-        <a href="#benchmarks" class="drawer-link">Benchmarks</a>
-        <a href="#download" class="drawer-link">Download (Windows PC)</a>
-        <a href="#faq" class="drawer-link">FAQ</a>
-        <div class="drawer-platform-tag">
-          <span class="tag-dot"></span> Compatible only with Windows 11 / 10
-        </div>
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github w-full">
-          <span>GitHub Repository</span>
-        </a>
-      </div>
+    <!-- Mobile sheet -->
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#demo">Live demo</a>
+      <a href="#features">Features</a>
+      <a href="#shortcuts">Shortcuts</a>
+      <a href="#benchmarks">Benchmarks</a>
+      <a href="#download">Download</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" rel="noopener">GitHub repository ↗</a>
+      <p class="mobile-menu-note"><span class="dot"></span>Runs on Windows 11 / 10 (64-bit)</p>
     </div>
   </header>
 
-  <!-- Boxed Hero Section -->
-  <section class="hero-section">
-    <div class="hero-box">
-      <div class="hero-content">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span>
-          <span>Windows 11 Native Copilot • Powered by Groq Whisper & Gemini</span>
-        </div>
+  <main id="main">
 
-        <h1 class="hero-title">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <span class="eyebrow rise"><span class="dot pulse"></span>Windows 11 native copilot · Groq Whisper &amp; Gemini</span>
+
+        <h1 class="display rise">
           Your desktop,<br>
-          <span class="gradient-text">without hands.</span>
+          <em>without hands.</em>
         </h1>
 
-        <p class="hero-subtitle">
-          Speak naturally. Handless understands your screen, navigates web DOM trees, streams speculative dictation in sub-100ms, and executes native Windows hardware actions without fragile mouse coordinates.
+        <p class="lede rise">
+          Speak naturally. Handless understands your screen, navigates web DOM trees, streams speculative dictation in under 100&nbsp;ms, and runs native Windows actions without fragile mouse coordinates.
         </p>
 
-        <div class="hero-cta">
-          <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download class="btn btn-hero-download download-trigger">
-            <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-            </svg>
-            <div>
-              <span class="cta-title">Download for Windows</span>
-              <span class="cta-sub">Windows 11 / 10 (64-bit) • Portable Release</span>
-            </div>
+        <div class="cta-row rise">
+          <a href="downloads/VyomaHandless-Setup.exe" download class="btn btn-dark btn-lg download-trigger">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M5 21h14"/></svg>
+            Download for Windows
           </a>
-          <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-hero-source">
-            <svg class="btn-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="16 18 22 12 16 6"/>
-              <polyline points="8 6 2 12 8 18"/>
-            </svg>
-            <div>
-              <span class="cta-title">Explore Source Code</span>
-              <span class="cta-sub">304 Tests Passing • MIT License</span>
-            </div>
+          <a href="#demo" class="btn btn-ghost btn-lg">
+            Try the live demo
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </div>
+        <p class="fineprint rise">Windows 11 / 10 · 64-bit · Guided installer · 310 tests passing · MIT licensed</p>
 
-        <div class="hero-platform-disclaimer">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px; flex-shrink: 0;">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/>
-            <line x1="12" y1="17" x2="12.01" y2="17"/>
-          </svg>
-          <span>Handless is engineered specifically for Windows desktop PCs. Not supported on Android or mobile phones.</span>
-        </div>
-
-        <!-- Quick Stats Pills -->
-        <div class="hero-metrics">
-          <div class="metric-pill">
-            <span class="metric-val">&lt;100ms</span>
-            <span class="metric-label">Perceived Dictation Latency</span>
-          </div>
-          <div class="metric-divider"></div>
-          <div class="metric-pill">
-            <span class="metric-val">3-Tier</span>
-            <span class="metric-label">Hybrid Routing (Local + Cloud)</span>
-          </div>
-          <div class="metric-divider"></div>
-          <div class="metric-pill">
-            <span class="metric-val">100%</span>
-            <span class="metric-label">Native Hardware & UIA Integration</span>
-          </div>
-        </div>
+        <dl class="hero-stats rise">
+          <div><dt>&lt;100<small>ms</small></dt><dd>Perceived dictation latency</dd></div>
+          <div><dt>3<small>-tier</small></dt><dd>Hybrid routing, local + cloud</dd></div>
+          <div><dt>100<small>%</small></dt><dd>Native hardware &amp; UIA</dd></div>
+        </dl>
       </div>
 
-      <!-- Interactive Canvas Visualizer Box -->
-      <div class="hero-visual">
-        <div class="orb-container">
-          <canvas id="orbCanvas" width="360" height="360"></canvas>
-          <div class="floating-bot-card">
-            <img src="assets/logo.png" alt="Handless Bot" class="bot-avatar">
-            <div class="bot-info">
-              <span class="bot-name">Handless Assistant</span>
-              <span class="bot-status"><span class="status-live"></span> Listening at 16kHz...</span>
-            </div>
+      <div class="hero-art rise" aria-hidden="true">
+        <div class="art-frame">
+          <canvas id="orbCanvas"></canvas>
+          <img src="assets/logo-512.webp" alt="" class="art-logo" width="512" height="480">
+          <div class="art-ring ring-1"></div>
+          <div class="art-ring ring-2"></div>
+        </div>
+
+        <div class="float-card listen-card">
+          <img src="assets/logo-96.png" alt="" width="34" height="34">
+          <div>
+            <strong>Handless</strong>
+            <span><span class="live"></span>Listening at 16 kHz</span>
           </div>
+          <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+
+        <div class="float-card said-card">
+          <span class="said-label">You said</span>
+          <span class="said-text">“Snap Chrome to the left”</span>
+          <span class="said-done">✓ Done in 4 ms</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Capability strip -->
+    <div class="strip" aria-label="Handless can">
+      <span class="strip-label">Handless can</span>
+      <div class="strip-track">
+        <div class="strip-row">
+          <span>Dictate anywhere</span><span>Click web elements by name</span><span>Read your screen</span><span>Control volume &amp; brightness</span><span>Snap windows</span><span>Run offline</span><span>Record voice macros</span><span>Hold live voice calls</span>
+        </div>
+        <div class="strip-row" aria-hidden="true">
+          <span>Dictate anywhere</span><span>Click web elements by name</span><span>Read your screen</span><span>Control volume &amp; brightness</span><span>Snap windows</span><span>Run offline</span><span>Record voice macros</span><span>Hold live voice calls</span>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Boxed Interactive Live Simulator Section -->
-  <section id="demo" class="demo-section">
-    <div class="section-header">
-      <span class="section-tag">Interactive Playground</span>
-      <h2 class="section-title">See Handless In Action</h2>
-      <p class="section-desc">Click any voice command pill below to simulate how Handless routes intents, inspects elements, and manipulates Windows without touching the mouse.</p>
-    </div>
+    <!-- Live demo -->
+    <section id="demo" class="section">
+      <header class="section-head reveal">
+        <span class="kicker">Interactive playground</span>
+        <h2 class="section-title">See Handless <em>in action</em></h2>
+        <p class="section-desc">Tap a voice command to watch how Handless routes the intent, finds the right element, and acts on Windows — no mouse involved.</p>
+      </header>
 
-    <div class="simulator-box">
-      <div class="simulator-controls">
-        <span class="controls-label">Test Voice Commands:</span>
-        <button class="cmd-pill active" data-cmd="set_volume">"Set my volume to 80%"</button>
-        <button class="cmd-pill" data-cmd="whatsapp_msg">"Select Vaishu and type hi"</button>
-        <button class="cmd-pill" data-cmd="snap_left">"Snap window to the left"</button>
-        <button class="cmd-pill" data-cmd="screen_lens">"Screen lens: explain this error"</button>
-        <button class="cmd-pill" data-cmd="spec_dictation">"Hold F8 (Wispr Flow Dictation)"</button>
-      </div>
-
-      <div class="simulator-viewport">
-        <!-- Simulated Windows 11 Titlebar -->
-        <div class="sim-titlebar">
-          <div class="win-controls">
-            <span class="win-btn close"></span>
-            <span class="win-btn min"></span>
-            <span class="win-btn max"></span>
-          </div>
-          <div class="win-title" id="simTitle">Windows 11 Desktop — Vyoma Handless Active</div>
-          <div class="sim-status-badge" id="simTierBadge">Tier 1: Local Rule (&lt;5ms)</div>
+      <div class="sim reveal">
+        <div class="sim-commands" role="tablist" aria-label="Voice commands">
+          <button class="cmd active" role="tab" aria-selected="true" data-cmd="set_volume">“Set my volume to 80%”</button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="whatsapp_msg">“Select Vaishu and type hi”</button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="snap_left">“Snap window to the left”</button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="screen_lens">“Screen lens: explain this error”</button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="spec_dictation">Hold Ctrl + Shift · dictation</button>
         </div>
 
-        <!-- Simulated Screen Content -->
-        <div class="sim-content" id="simContent">
-          <div class="sim-desktop-bg">
-            <!-- Simulated Handless Sidebar -->
-            <div class="sim-sidebar" id="simSidebar">
-              <div class="sim-sidebar-header">
-                <span class="sim-brand">handless<small>™</small></span>
-                <span class="sim-chip" id="simActionState">
-                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" style="vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"/></svg>
-                  Done
-                </span>
+        <div class="sim-window">
+          <div class="sim-bar">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="sim-title" id="simTitle">Windows 11 Desktop — Master Audio Control</span>
+            <span class="sim-tier" id="simTierBadge">Tier 1 · Local rule (&lt;5 ms)</span>
+          </div>
+
+          <div class="sim-body">
+            <aside class="sim-panel">
+              <div class="sim-panel-head">
+                <span class="sim-brand"><img src="assets/logo-96.png" alt="" width="18" height="18">handless</span>
+                <span class="sim-state" id="simActionState">✓ Done</span>
               </div>
-              <div class="sim-sidebar-body">
-                <div class="sim-prompt-box">
-                  <div class="sim-transcript-text" id="simTranscript">"Set my volume to 80%"</div>
-                </div>
-                <div class="sim-action-log" id="simActionLog">
-                  <div class="log-entry">
-                    <span class="log-icon">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                    </span>
-                    <span class="log-text">Matched Rule: SetVolume(80)</span>
-                  </div>
-                  <div class="log-entry">
-                    <span class="log-icon">
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                    </span>
-                    <span class="log-text">IAudioEndpointVolume: 0.80 applied</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <div class="sim-transcript" id="simTranscript">“Set my volume to 80%”</div>
+              <ol class="sim-log" id="simActionLog"></ol>
+            </aside>
 
-            <!-- Simulated Desktop Canvas Preview -->
-            <div class="sim-stage" id="simStage">
-              <div class="stage-placeholder" id="stagePlaceholder">
-                <div class="hud-box" id="hudBox">
-                  <div class="hud-slider-track">
-                    <div class="hud-slider-fill" id="hudSliderFill" style="width: 80%;"></div>
-                  </div>
-                  <span class="hud-label" id="hudLabel">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-                    Master Volume Adjusted to 80%
-                  </span>
-                </div>
-              </div>
-            </div>
+            <div class="sim-stage" id="stagePlaceholder" aria-live="polite"></div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Boxed Feature Grid Section -->
-  <section id="features" class="features-section">
-    <div class="section-header">
-      <span class="section-tag">Next-Gen Capabilities</span>
-      <h2 class="section-title">Engineered For Pure Productivity</h2>
-      <p class="section-desc">Every layer was designed from scratch to overcome traditional voice assistant lag and fragile coordinate clicking.</p>
-    </div>
+    <!-- Features -->
+    <section id="features" class="section">
+      <header class="section-head reveal">
+        <span class="kicker">Capabilities</span>
+        <h2 class="section-title">Built for <em>pure productivity</em></h2>
+        <p class="section-desc">Every layer was designed from scratch to beat voice-assistant lag and fragile coordinate clicking.</p>
+      </header>
 
-    <div class="features-grid">
-      <!-- Card 1 -->
-      <div class="feature-card highlight-card">
-        <div class="feature-icon-wrapper purple">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-          </svg>
-        </div>
-        <h3 class="feature-title">Wispr Flow Speculative Dictation</h3>
-        <p class="feature-desc">Streams discrete 200ms audio chunks in parallel background threads to Groq Whisper Large v3. Text slams onto the cursor in sub-100ms when you release the push-to-talk key.</p>
-        <div class="feature-pills">
-          <span>Sub-100ms Perceived</span>
-          <span>4-Level LLM Cleanup</span>
-          <span>RPM Pacing</span>
-        </div>
+      <div class="feature-grid">
+        <article class="feature feature-lead reveal">
+          <div class="f-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg></div>
+          <span class="f-num">01</span>
+          <h3>Wispr Flow speculative dictation</h3>
+          <p>Streams 200 ms audio chunks in parallel background threads to Groq Whisper Large v3. Text lands at your cursor in under 100 ms when you release the push-to-talk key.</p>
+          <ul class="tags"><li>Sub-100 ms perceived</li><li>4-level LLM cleanup</li><li>RPM pacing</li></ul>
+        </article>
+
+        <article class="feature reveal">
+          <div class="f-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <span class="f-num">02</span>
+          <h3>True web DOM piercing</h3>
+          <p>Wakes Chromium's hidden accessibility engine and bridges to the Chrome DevTools Protocol on localhost:9222 to read real DOM nodes, attributes and ARIA labels.</p>
+          <ul class="tags"><li>Zero-lag UIA</li><li>Chrome · Edge · Brave</li><li>CDP bridge</li></ul>
+        </article>
+
+        <article class="feature reveal">
+          <div class="f-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+          <span class="f-num">03</span>
+          <h3>Universal Screen Lens</h3>
+          <p>Press <kbd>Win</kbd> <kbd>Shift</kbd> <kbd>Space</kbd> over any window or editor. Handless captures the screen and answers questions or extracts text with Gemini 2.5 Flash and Groq Vision.</p>
+          <ul class="tags"><li>Instant OCR</li><li>Visual grounding</li><li>Code Q&amp;A</li></ul>
+        </article>
+
+        <article class="feature feature-wide reveal">
+          <div class="f-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <span class="f-num">04</span>
+          <h3>Native hardware &amp; system tools</h3>
+          <p>Direct control of master volume, display brightness, sleep / lock / restart, window snapping and night light through native COM and WMI APIs.</p>
+          <ul class="tags"><li>Master volume</li><li>WMI brightness</li><li>Power &amp; snapping</li></ul>
+        </article>
+
+        <article class="feature feature-wide reveal">
+          <div class="f-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
+          <span class="f-num">05</span>
+          <h3>Element inspector &amp; spy</h3>
+          <p>Inspect elements live with a glowing crosshair snapper. Handless generates resilient 3-tier locators: AutomationId first, structure second, vision third.</p>
+          <ul class="tags"><li>Live hover spy</li><li>Resilient locators</li><li>UIA tree dump</li></ul>
+        </article>
+
+        <article class="feature reveal">
+          <div class="f-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M6 8v8M10 5v14M14 8v8M18 10v4M22 12h0"/></svg></div>
+          <span class="f-num">06</span>
+          <h3>Gemini Live voice calls</h3>
+          <p>Hold continuous, low-latency spoken conversations with Gemini Live — with a 3D thinking orb that pulses with speech while tools run in the background.</p>
+          <ul class="tags"><li>Bidirectional audio</li><li>3D thinking orb</li><li>Tool execution</li></ul>
+        </article>
       </div>
+    </section>
 
-      <!-- Card 2 -->
-      <div class="feature-card">
-        <div class="feature-icon-wrapper cyan">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="2" y1="12" x2="22" y2="12"/>
-            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-          </svg>
+    <!-- Shortcuts -->
+    <section id="shortcuts" class="section">
+      <div class="shortcuts reveal">
+        <div class="shortcuts-copy">
+          <span class="kicker">Muscle memory</span>
+          <h2 class="section-title">Five keys. <em>That's it.</em></h2>
+          <p class="section-desc">Everything else is your voice. These are the only shortcuts worth learning.</p>
         </div>
-        <h3 class="feature-title">True Web DOM Piercing</h3>
-        <p class="feature-desc">Automatically wakes Chromium's hidden accessibility engine and bridges with Chrome DevTools Protocol (CDP) on localhost:9222 to read raw web DOM nodes, attributes, and ARIA labels.</p>
-        <div class="feature-pills">
-          <span>Zero-Lag UIA</span>
-          <span>Chrome / Edge / Brave</span>
-          <span>CDP Bridge</span>
-        </div>
+        <ul class="key-list">
+          <li><span class="keys"><kbd>Ctrl</kbd><kbd>Space</kbd></span><span><strong>Hold to command</strong>Hold, say what you want done, release.</span></li>
+          <li><span class="keys"><kbd>Ctrl</kbd><kbd>Shift</kbd></span><span><strong>Hold to dictate</strong>Speculative dictation — release and the text is already typed.</span></li>
+          <li><span class="keys"><kbd>Win</kbd><kbd>Shift</kbd><kbd>Space</kbd></span><span><strong>Screen Lens</strong>Ask about, or extract text from, whatever is on screen.</span></li>
+          <li><span class="keys"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Q</kbd></span><span><strong>Emergency stop</strong>Instantly kills every in-flight mouse, keyboard and window action.</span></li>
+          <li><span class="keys"><kbd>Esc</kbd><kbd>Esc</kbd></span><span><strong>Quick cancel</strong>Tap Escape twice to stop the current action.</span></li>
+        </ul>
       </div>
+    </section>
 
-      <!-- Card 3 -->
-      <div class="feature-card">
-        <div class="feature-icon-wrapper amber">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-          </svg>
-        </div>
-        <h3 class="feature-title">Universal Screen Lens</h3>
-        <p class="feature-desc">Press <kbd>Win + Shift + Space</kbd> over any desktop window or code editor. Handless captures the screen and answers questions or extracts text via Gemini 2.5 Flash and Groq Vision.</p>
-        <div class="feature-pills">
-          <span>Instant OCR</span>
-          <span>Visual Grounding</span>
-          <span>Code QA</span>
-        </div>
-      </div>
+    <!-- Benchmarks -->
+    <section id="benchmarks" class="section">
+      <header class="section-head reveal">
+        <span class="kicker">Real-world performance</span>
+        <h2 class="section-title">How it <em>compares</em></h2>
+        <p class="section-desc">Vyoma Handless against traditional speech engines and cloud desktop assistants.</p>
+      </header>
 
-      <!-- Card 4 -->
-      <div class="feature-card">
-        <div class="feature-icon-wrapper emerald">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
-            <line x1="8" y1="21" x2="16" y2="21"/>
-            <line x1="12" y1="17" x2="12" y2="21"/>
-          </svg>
-        </div>
-        <h3 class="feature-title">Native Hardware & System Tools</h3>
-        <p class="feature-desc">Direct control over Windows master volume, display brightness, power states (sleep, lock, restart), window snapping, and night light via native COM and WMI APIs.</p>
-        <div class="feature-pills">
-          <span>Master Volume</span>
-          <span>WMI Brightness</span>
-          <span>Power & Snapping</span>
-        </div>
-      </div>
-
-      <!-- Card 5 -->
-      <div class="feature-card">
-        <div class="feature-icon-wrapper blue">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <circle cx="12" cy="12" r="4"/>
-            <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/>
-            <line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/>
-            <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/>
-            <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/>
-          </svg>
-        </div>
-        <h3 class="feature-title">Desktop Element Inspector & Spy</h3>
-        <p class="feature-desc">Inspect elements live with a glowing bounding crosshair snapper. Handless automatically generates 3-tier resilient locators: Primary AutomationId, Secondary Structure, and Tertiary Vision.</p>
-        <div class="feature-pills">
-          <span>Live Hover Spy</span>
-          <span>Resilient Locators</span>
-          <span>UIA Tree Dump</span>
-        </div>
-      </div>
-
-      <!-- Card 6 -->
-      <div class="feature-card">
-        <div class="feature-icon-wrapper rose">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-          </svg>
-        </div>
-        <h3 class="feature-title">Gemini Multimodal Live Voice Call</h3>
-        <p class="feature-desc">Engage in continuous, low-latency spoken conversations with Gemini Live. Features a geometric 3D thinking orb that pulses dynamically with speech and executes background tools.</p>
-        <div class="feature-pills">
-          <span>Bidirectional Audio</span>
-          <span>3D Thinking Orb</span>
-          <span>Tool Execution</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Boxed Benchmarks Section -->
-  <section id="benchmarks" class="benchmarks-section">
-    <div class="section-header">
-      <span class="section-tag">Real-World Performance</span>
-      <h2 class="section-title">Benchmark Comparison</h2>
-      <p class="section-desc">See how Vyoma Handless compares against traditional speech engines and cloud desktop assistants.</p>
-    </div>
-
-    <div class="benchmarks-box">
-      <div class="table-container">
-        <table class="benchmark-table">
+      <div class="bench reveal">
+        <table class="bench-table">
           <thead>
             <tr>
-              <th>Capability / Benchmark</th>
-              <th class="highlight-col">Vyoma Handless™</th>
-              <th>Traditional Voice Assistants</th>
-              <th>Generic Cloud STT</th>
+              <th scope="col">Capability</th>
+              <th scope="col" class="us">Vyoma Handless™</th>
+              <th scope="col">Traditional voice assistants</th>
+              <th scope="col">Generic cloud STT</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><strong>Perceived Dictation Latency</strong></td>
-              <td class="highlight-col"><span class="badge-fast">&lt; 100ms</span> (Speculative)</td>
-              <td>1,200ms – 2,500ms</td>
-              <td>1,800ms+</td>
+              <th scope="row">Perceived dictation latency</th>
+              <td class="us" data-label="Handless"><span class="win">&lt; 100 ms</span> speculative</td>
+              <td data-label="Voice assistants">1,200 – 2,500 ms</td>
+              <td data-label="Cloud STT">1,800 ms+</td>
             </tr>
             <tr>
-              <td><strong>Windows Hardware Control</strong></td>
-              <td class="highlight-col">Direct Native WMI / COM (Volume, Brightness, Power)</td>
-              <td>Limited or Simulated Keyboard Shortcuts</td>
-              <td>None (Speech only)</td>
+              <th scope="row">Windows hardware control</th>
+              <td class="us" data-label="Handless">Native WMI / COM — volume, brightness, power</td>
+              <td data-label="Voice assistants">Limited or simulated shortcuts</td>
+              <td data-label="Cloud STT">None (speech only)</td>
             </tr>
             <tr>
-              <td><strong>Web Browser Automation</strong></td>
-              <td class="highlight-col">Chromium Accessibility + CDP Bridge</td>
-              <td>Blind Coordinates / OCR only</td>
-              <td>None</td>
+              <th scope="row">Web browser automation</th>
+              <td class="us" data-label="Handless">Chromium accessibility + CDP bridge</td>
+              <td data-label="Voice assistants">Blind coordinates / OCR only</td>
+              <td data-label="Cloud STT">None</td>
             </tr>
             <tr>
-              <td><strong>Screen Understanding</strong></td>
-              <td class="highlight-col">Multimodal Gemini 2.5 Flash + Screen Lens</td>
-              <td>None</td>
-              <td>None</td>
+              <th scope="row">Screen understanding</th>
+              <td class="us" data-label="Handless">Gemini 2.5 Flash + Screen Lens</td>
+              <td data-label="Voice assistants">None</td>
+              <td data-label="Cloud STT">None</td>
             </tr>
             <tr>
-              <td><strong>Offline Capability</strong></td>
-              <td class="highlight-col">100% Offline Whisper Base int8 (Sherpa-ONNX)</td>
-              <td>Proprietary Cloud Required</td>
-              <td>Cloud API Only</td>
+              <th scope="row">Offline capability</th>
+              <td class="us" data-label="Handless">Offline Whisper Base int8 (Sherpa-ONNX)</td>
+              <td data-label="Voice assistants">Proprietary cloud required</td>
+              <td data-label="Cloud STT">Cloud API only</td>
             </tr>
             <tr>
-              <td><strong>License & Source</strong></td>
-              <td class="highlight-col">100% Free & Open-Source (MIT)</td>
-              <td>Closed / Proprietary</td>
-              <td>Paid API Tokens</td>
+              <th scope="row">License &amp; source</th>
+              <td class="us" data-label="Handless">Free &amp; open source (MIT)</td>
+              <td data-label="Voice assistants">Closed / proprietary</td>
+              <td data-label="Cloud STT">Paid API tokens</td>
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Boxed Download & Quickstart Section -->
-  <section id="download" class="download-section">
-    <div class="download-box">
-      <div class="download-badge">Official Release • v0.1.0-beta</div>
-      <h2 class="download-title">Get Started With Handless</h2>
-      <p class="download-desc">Choose between downloading the standalone portable Windows release or installing directly via Python in your development environment.</p>
+    <!-- Download -->
+    <section id="download" class="download">
+      <div class="download-inner">
+        <header class="section-head reveal">
+          <span class="kicker kicker-light">Official release · v0.2.0</span>
+          <h2 class="section-title">Get started with <em>Handless</em></h2>
+          <p class="section-desc">Install in about a minute — no administrator rights, nothing else to download. Or run it from source.</p>
+        </header>
 
-      <div class="download-options">
-        <div class="option-box">
-          <div class="option-header">
-            <span class="option-tag">Recommended for Users</span>
-            <h3>Standalone Windows Release</h3>
-            <p>Single portable package with Python runtime, PySide6 UI, and vector icons bundled.</p>
-          </div>
-          <div class="option-action">
-            <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download class="btn btn-download-primary download-trigger">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-              </svg>
-              <span>Download VyomaHandless.zip (64-bit)</span>
-            </a>
-            <span class="file-meta">Portable • Zero Installation • Windows 11 / 10 Only (Not Android)</span>
-          </div>
-        </div>
-
-        <div class="option-box">
-          <div class="option-header">
-            <span class="option-tag">For Developers</span>
-            <h3>Install From Source</h3>
-            <p>Clone the GitHub repository and run locally in an isolated virtual environment.</p>
-          </div>
-          <div class="code-terminal">
-            <div class="code-header">
-              <span class="term-dot"></span>
-              <span class="term-title">PowerShell</span>
-              <button class="btn-copy" onclick="copyCode()">Copy</button>
+        <div class="dl-grid">
+          <article class="dl-card reveal">
+            <span class="dl-tag">Recommended</span>
+            <div class="dl-os">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M3 5.6l7.2-1v7.1H3V5.6zM3 13.3h7.2v7.1L3 19.4v-6.1zM11 4.4L21 3v9.7h-10V4.4zM11 13.3h10V21l-10-1.4v-6.3z"/></svg>
+              <div><h3>Windows installer</h3><p>Windows 11 / 10 · 64-bit</p></div>
             </div>
-            <pre><code id="installCode">git clone https://github.com/vyomagroupofficial-lab/handless.git
+            <ul class="dl-meta">
+              <li>Guided setup checks your microphone and Windows privacy switch</li>
+              <li>Optional AI keys stored in Windows Credential Manager</li>
+              <li>Start with Windows, desktop shortcut, clean uninstall</li>
+              <li>Offline speech engine included — works without an API key</li>
+            </ul>
+            <a href="downloads/VyomaHandless-Setup.exe" download class="btn btn-orange btn-lg btn-block download-trigger">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 10l5 5 5-5M5 21h14"/></svg>
+              Download VyomaHandless-Setup.exe
+            </a>
+            <p class="fineprint">147 MB installer · If SmartScreen appears, choose “More info → Run anyway” (not code-signed yet). Prefer no install? <a href="downloads/VyomaHandless-v0.2.0-windows-x64.zip" download>Portable .zip</a></p>
+          </article>
+
+          <article class="dl-card reveal">
+            <span class="dl-tag dl-tag-muted">For developers</span>
+            <div class="dl-os">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+              <div><h3>Install from source</h3><p>Python virtual environment</p></div>
+            </div>
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span class="dots"><i></i><i></i><i></i></span>
+                <span>PowerShell</span>
+                <button class="copy-btn" id="copyInstall" type="button">Copy</button>
+              </div>
+<pre><code id="installCode">git clone https://github.com/vyomagroupofficial-lab/handless.git
 cd handless
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -e ".[dev]"
 python -m handless.app</code></pre>
-          </div>
+            </div>
+          </article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Boxed FAQ Section -->
-  <section id="faq" class="faq-section">
-    <div class="section-header">
-      <span class="section-tag">Got Questions?</span>
-      <h2 class="section-title">Frequently Asked Questions</h2>
-    </div>
+    <!-- FAQ -->
+    <section id="faq" class="section section-narrow">
+      <header class="section-head reveal">
+        <span class="kicker">Got questions?</span>
+        <h2 class="section-title">Frequently <em>asked</em></h2>
+      </header>
 
-    <div class="faq-box">
-      <div class="faq-list">
-        <div class="faq-item active">
-          <button class="faq-question">
-            <span>Does Handless require a paid API key to work?</span>
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>No! Handless includes a 100% offline speech recognition engine (Sherpa-ONNX int8 Whisper Base) and local regex rules that operate entirely on your CPU without any internet connection. You can optionally add a free Groq API key (for cloud Whisper Large v3) and a free Google Gemini key (for Screen Lens & Gemini Live) directly in Settings.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>Can I run Vyoma Handless on Android, iOS, or Mac?</span>
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p><strong>Handless is currently exclusive to Windows 11 and Windows 10 (64-bit).</strong> It deeply hooks into native Windows OS subsystems including Windows UIAutomation (UIA COM), Core Audio Endpoint APIs, WMI display brightness controls, and Win32 window management hooks. Because these low-level APIs do not exist on Android or iOS, Handless cannot run on mobile devices. You can read all documentation and watch demos here on your phone, then download Handless on your Windows PC!</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>How does Wispr Flow speculative dictation work?</span>
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>While you hold <kbd>F8</kbd>, Handless buffers your live microphone stream into small 200ms audio frames. As soon as you finish a phrase, it pre-transcribes the audio in parallel background threads. When you release <kbd>F8</kbd>, the text is already transcribed, resulting in instantaneous sub-100ms text typing into your active application.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>How do I stop an accidental voice action?</span>
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>Handless has a hardware-level Emergency Stop built-in. Press <kbd>Ctrl + Shift + Q</kbd> (or tap <kbd>Escape</kbd> twice) at any time to instantly kill all in-flight mouse, keyboard, and window automation tasks.</p>
-          </div>
-        </div>
-
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>Can I contribute or add custom voice workflows?</span>
-            <span class="faq-icon">+</span>
-          </button>
-          <div class="faq-answer">
-            <p>Yes! Handless includes a Macro Recorder (`"start macro recording"`) to record your own keystrokes and clicks into voice macros. Developers can also easily add new patterns to `LocalRuleParser` or build native Python plugins.</p>
-          </div>
-        </div>
+      <div class="faq reveal">
+        <details open>
+          <summary>Does Handless need a paid API key?</summary>
+          <p>No. The installer bundles a fully offline speech engine (Sherpa-ONNX int8 Whisper Base) and local rules that run entirely on your CPU with no internet. You can optionally add a free Groq key (for cloud Whisper Large v3) and a free Google Gemini key (for Screen Lens and Gemini Live) in Settings.</p>
+        </details>
+        <details>
+          <summary>Can I run it on Android, iOS or Mac?</summary>
+          <p><strong>Handless is Windows 11 / 10 (64-bit) only.</strong> It hooks deep into Windows subsystems — UI Automation (UIA COM), Core Audio endpoints, WMI brightness and Win32 window management — which don't exist on Android or iOS. Read the docs and try the demo here on your phone, then download on your Windows PC.</p>
+        </details>
+        <details>
+          <summary>How does speculative dictation work?</summary>
+          <p>While you hold <kbd>Ctrl</kbd> <kbd>Shift</kbd>, Handless buffers the mic stream into 200 ms frames and pre-transcribes finished phrases in parallel background threads. By the time you release the keys the text is already transcribed, so it's typed into your app in under 100 ms.</p>
+        </details>
+        <details>
+          <summary>How do I stop an accidental voice action?</summary>
+          <p>Press <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Q</kbd> — or tap <kbd>Esc</kbd> twice — at any time. The emergency stop instantly kills all in-flight mouse, keyboard and window automation.</p>
+        </details>
+        <details>
+          <summary>Can I add my own voice workflows?</summary>
+          <p>Yes. Say “start macro recording” to record your own keystrokes and clicks into a voice macro. Developers can add patterns to <code>LocalRuleParser</code> or write native Python plugins.</p>
+        </details>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Boxed Footer -->
-  <footer class="footer">
-    <div class="footer-box">
-      <div class="footer-brand">
-        <div class="brand">
-          <img src="assets/logo.png" alt="Vyoma Handless" class="brand-logo">
-          <span class="brand-name">handless<span class="brand-trademark">™</span></span>
-        </div>
-        <p class="footer-tagline">Open-source, voice-first desktop AI copilot for Windows 11.</p>
-        <p class="footer-copy">© 2026 Vyoma Innovations. Released under the MIT License.</p>
+  </main>
+
+  <!-- Footer -->
+  <footer class="foot">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <a href="#top" class="brand">
+          <img src="assets/logo-96.png" alt="" width="30" height="30" class="brand-logo">
+          <span class="brand-name">Handless<sup>™</sup></span>
+        </a>
+        <p>Open-source, voice-first desktop AI copilot for Windows 11.</p>
       </div>
-
-      <div class="footer-links-col">
+      <div class="foot-col">
         <h4>Product</h4>
+        <a href="#demo">Live demo</a>
         <a href="#features">Features</a>
-        <a href="#demo">Live Demo</a>
         <a href="#benchmarks">Benchmarks</a>
-        <a href="#download">Download .exe</a>
+        <a href="#download">Download</a>
       </div>
-
-      <div class="footer-links-col">
-        <h4>Community & Code</h4>
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank">GitHub Repository</a>
-        <a href="https://github.com/vyomagroupofficial-lab/handless/issues" target="_blank">Issue Tracker</a>
-        <a href="https://github.com/vyomagroupofficial-lab/handless/blob/main/CONTRIBUTING.md" target="_blank">Contributing Guide</a>
-        <a href="https://github.com/vyomagroupofficial-lab/handless/blob/main/LICENSE" target="_blank">MIT License</a>
+      <div class="foot-col">
+        <h4>Community</h4>
+        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" rel="noopener">GitHub repository</a>
+        <a href="https://github.com/vyomagroupofficial-lab/handless/issues" target="_blank" rel="noopener">Issue tracker</a>
+        <a href="https://github.com/vyomagroupofficial-lab/handless/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing guide</a>
+        <a href="https://github.com/vyomagroupofficial-lab/handless/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
       </div>
+      <div class="foot-col">
+        <h4>Vyoma</h4>
+        <a href="https://vyomagroup.online/" target="_blank" rel="noopener">Vyoma Group</a>
+        <a href="https://vastra.vyomagroup.online/" target="_blank" rel="noopener">Vastra browser</a>
+        <a href="https://helix.vyomagroup.online/" target="_blank" rel="noopener">Helix</a>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 Vyoma Innovations · Released under the MIT License</span>
+      <span>Made for hands-free humans ✦</span>
     </div>
   </footer>
 
-  <!-- Mobile Download Info Modal -->
-  <div class="modal-backdrop" id="mobileModal">
+  <!-- Mobile download dialog -->
+  <div class="modal" id="mobileModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
     <div class="modal-card">
-      <div class="modal-header">
-        <span class="modal-badge">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -1px; margin-right: 4px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          Windows PC Only
-        </span>
-        <button class="modal-close" id="modalClose" aria-label="Close modal">&times;</button>
-      </div>
-      <h3 class="modal-title">Not Compatible With Android</h3>
-      <p class="modal-desc">
-        Vyoma Handless is a native 64-bit Windows software package (.exe) designed for Windows 11 / 10 PCs. It cannot run or install on Android phones or tablets.
-      </p>
-      <div class="modal-tip">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><path d="M9 18h6m-4 4h2m-5-8.5a6 6 0 1 1 8 0c-.8.8-1.5 2-1.5 3.5h-5c0-1.5-.7-2.7-1.5-3.5z"/></svg>
-        <strong>Tip:</strong> Copy the download link to send to your PC via WhatsApp/Email, or star our GitHub repo so you can find it later on your desktop.
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-primary w-full" id="btnCopyDesktopLink">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          <span>Copy PC Download Link</span>
-        </button>
-        <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" class="btn btn-github w-full">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          <span>Star On GitHub</span>
-        </a>
-      </div>
-      <div class="modal-footer-link">
-        <a href="downloads/VyomaHandless-v0.1.0-windows-x64.zip" download>Download file anyway (to transfer to PC)</a>
-      </div>
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+      <span class="modal-badge">Windows PC only</span>
+      <h3 id="modalTitle">Download it on your PC</h3>
+      <p>Handless is a native 64-bit Windows app for Windows 11 / 10. It can't install on phones or tablets — send the link to your computer instead.</p>
+      <button class="btn btn-dark btn-block" id="btnCopyDesktopLink" type="button">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Copy PC download link</span>
+      </button>
+      <a href="https://github.com/vyomagroupofficial-lab/handless" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Star on GitHub</a>
+      <a href="downloads/VyomaHandless-Setup.exe" download class="modal-anyway">Download the file anyway</a>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=2.1"></script>
 </body>
 </html>
-

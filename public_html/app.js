@@ -1,478 +1,449 @@
 // ============================================================
-// Vyoma Handless™ — Official Production JavaScript
-// Light Cream & Obsidian Monochrome Theme | 3D Canvas Orb
-// Hostinger (handless.vyomagroup.online)
+// Vyoma Handless™ — Landing page scripts
+// Warm paper theme | canvas orb, voice simulator, mobile UX
+// handless.vyomagroup.online
 // ============================================================
 
+const DOWNLOAD_URL = "https://handless.vyomagroup.online/downloads/VyomaHandless-Setup.exe";
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 document.addEventListener("DOMContentLoaded", () => {
+  initNav();
+  initReveal();
   initOrbCanvas();
   initVoiceSimulator();
-  initFaqAccordion();
+  initCopyInstall();
   initMobileSupport();
 });
 
+// Storage can throw in private mode; never let it break the page.
+function store(key, value) {
+  try {
+    if (value === undefined) return sessionStorage.getItem(key);
+    sessionStorage.setItem(key, value);
+  } catch (e) { return null; }
+}
+
 // ------------------------------------------------------------
-// 1. 3D Geometric Canvas Orb Animation (Monochrome Architectural Style)
+// 1. Navigation: scrolled state, mobile sheet, active link
+// ------------------------------------------------------------
+function initNav() {
+  const nav = document.getElementById("nav");
+  const menuBtn = document.getElementById("menuBtn");
+  const menu = document.getElementById("mobileMenu");
+  if (!nav) return;
+
+  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 8);
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const setOpen = (open) => {
+    nav.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+
+  if (menuBtn && menu) {
+    menuBtn.addEventListener("click", () => setOpen(!nav.classList.contains("open")));
+    menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
+  }
+
+  // Highlight the section currently in view
+  const links = [...document.querySelectorAll(".nav-links a")];
+  const sections = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  if (!("IntersectionObserver" in window) || !sections.length) return;
+
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + entry.target.id));
+    });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  sections.forEach(s => spy.observe(s));
+}
+
+// ------------------------------------------------------------
+// 2. Reveal-on-scroll
+// ------------------------------------------------------------
+function initReveal() {
+  const items = document.querySelectorAll(".reveal");
+  if (REDUCED_MOTION || !("IntersectionObserver" in window)) {
+    items.forEach(el => el.classList.add("in"));
+    return;
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("in");
+      io.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+  items.forEach((el, i) => {
+    // Stagger siblings slightly so grids cascade in
+    el.style.transitionDelay = `${(i % 4) * 70}ms`;
+    io.observe(el);
+  });
+}
+
+// ------------------------------------------------------------
+// 3. Warm constellation orb behind the logo
 // ------------------------------------------------------------
 function initOrbCanvas() {
   const canvas = document.getElementById("orbCanvas");
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
 
-  // Handle Retina displays
-  const dpr = window.devicePixelRatio || 1;
-  const rect = canvas.getBoundingClientRect();
-  canvas.width = rect.width * dpr;
-  canvas.height = rect.height * dpr;
-  ctx.scale(dpr, dpr);
+  let width = 0, height = 0, radius = 0;
+  const resize = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width;
+    height = rect.height;
+    radius = width * 0.4;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+  resize();
+  window.addEventListener("resize", resize);
 
-  const width = rect.width;
-  const height = rect.height;
-  const cx = width / 2;
-  const cy = height / 2;
-  const radius = width * 0.35;
-
-  // Generate points on a sphere (Fibonacci sphere algorithm)
-  const numPoints = 120;
-  const points = [];
-  const phi = (1 + Math.sqrt(5)) / 2; // Golden ratio
-
+  // Fibonacci sphere
+  const numPoints = 140;
+  const golden = Math.PI * (3 - Math.sqrt(5));
+  const unit = [];
   for (let i = 0; i < numPoints; i++) {
-    const theta = 2 * Math.PI * i / phi;
     const y = 1 - (i / (numPoints - 1)) * 2;
-    const radiusAtY = Math.sqrt(1 - y * y);
-    const x = Math.cos(theta) * radiusAtY;
-    const z = Math.sin(theta) * radiusAtY;
-    points.push({ x: x * radius, y: y * radius, z: z * radius });
+    const r = Math.sqrt(1 - y * y);
+    unit.push({ x: Math.cos(golden * i) * r, y, z: Math.sin(golden * i) * r });
   }
 
-  let angleX = 0;
-  let angleY = 0;
-  let pulse = 0;
+  let angleX = 0.4, angleY = 0, pulse = 0, running = true;
+
+  // Pause the animation when the hero is off screen
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(([entry]) => {
+      const wasRunning = running;
+      running = entry.isIntersecting;
+      if (running && !wasRunning) requestAnimationFrame(render);
+    }).observe(canvas);
+  }
 
   function render() {
     ctx.clearRect(0, 0, width, height);
+    const cx = width / 2, cy = height / 2;
 
-    angleX += 0.005;
-    angleY += 0.008;
-    pulse += 0.035;
-    const pulseFactor = 1 + Math.sin(pulse) * 0.04;
+    angleX += 0.0022;
+    angleY += 0.004;
+    pulse += 0.03;
+    const scale = radius * (1 + Math.sin(pulse) * 0.03);
+    const cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+    const cosY = Math.cos(angleY), sinY = Math.sin(angleY);
 
-    const projected = [];
-    const cosX = Math.cos(angleX);
-    const sinX = Math.sin(angleX);
-    const cosY = Math.cos(angleY);
-    const sinY = Math.sin(angleY);
+    const pts = unit.map(p => {
+      const x1 = p.x * cosY + p.z * sinY;
+      const z1 = -p.x * sinY + p.z * cosY;
+      const y2 = p.y * cosX - z1 * sinX;
+      const z2 = p.y * sinX + z1 * cosX;
+      const depth = (z2 + 1) / 2; // 0 back, 1 front
+      const fov = 3 / (3 + z2);
+      return { x: cx + x1 * scale * fov, y: cy + y2 * scale * fov, depth };
+    });
 
-    for (let i = 0; i < points.length; i++) {
-      const p = points[i];
-
-      // Rotate Y
-      let x1 = p.x * cosY + p.z * sinY;
-      let y1 = p.y;
-      let z1 = -p.x * sinY + p.z * cosY;
-
-      // Rotate X
-      let x2 = x1;
-      let y2 = y1 * cosX - z1 * sinX;
-      let z2 = y1 * sinX + z1 * cosX;
-
-      // Pulse scaling
-      x2 *= pulseFactor;
-      y2 *= pulseFactor;
-      z2 *= pulseFactor;
-
-      // Perspective projection
-      const distance = 420;
-      const fov = distance / (distance + z2);
-      const px = cx + x2 * fov;
-      const py = cy + y2 * fov;
-      const alpha = (z2 + radius) / (2 * radius);
-
-      projected.push({ x: px, y: py, z: z2, alpha: Math.max(0.18, Math.min(1, alpha)) });
-    }
-
-    // Sort points back to front
-    projected.sort((a, b) => a.z - b.z);
-
-    // Draw connecting lines (refined architectural lines)
-    ctx.lineWidth = 0.85;
-    for (let i = 0; i < projected.length; i++) {
-      for (let j = i + 1; j < projected.length; j++) {
-        const dx = projected[i].x - projected[j].x;
-        const dy = projected[i].y - projected[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 40) {
-          const lineAlpha = (1 - dist / 40) * 0.25 * projected[i].alpha;
-          ctx.strokeStyle = `rgba(24, 24, 27, ${lineAlpha * 0.75})`;
+    const linkDist = width * 0.11;
+    ctx.lineWidth = 0.8;
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const d = Math.hypot(dx, dy);
+        if (d < linkDist) {
+          const a = (1 - d / linkDist) * 0.32 * Math.min(pts[i].depth, pts[j].depth);
+          ctx.strokeStyle = `rgba(184, 70, 26, ${a})`;
           ctx.beginPath();
-          ctx.moveTo(projected[i].x, projected[i].y);
-          ctx.lineTo(projected[j].x, projected[j].y);
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
           ctx.stroke();
         }
       }
     }
 
-    // Draw points (rich obsidian black nodes)
-    for (let i = 0; i < projected.length; i++) {
-      const p = projected[i];
-      const pRadius = Math.max(1.2, 2.5 * (p.z + radius) / (2 * radius));
-
+    for (const p of pts) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, pRadius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(24, 24, 27, ${p.alpha * 0.9})`;
-      ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-      ctx.shadowBlur = 5;
+      ctx.arc(p.x, p.y, 0.8 + p.depth * 1.8, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${Math.round(150 + p.depth * 82)}, ${Math.round(70 + p.depth * 28)}, 30, ${0.18 + p.depth * 0.6})`;
       ctx.fill();
-      ctx.shadowBlur = 0;
     }
 
-    requestAnimationFrame(render);
+    if (running && !REDUCED_MOTION) requestAnimationFrame(render);
   }
 
   render();
 }
 
 // ------------------------------------------------------------
-// 2. SVG Icon Library & Interactive Voice Simulator
+// 4. Interactive voice simulator
 // ------------------------------------------------------------
-const SVGS = {
-  bolt: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
-  volume: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
-  link: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
-  cursor: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 15l6 6m-6-6v4.5m0-4.5h4.5M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>`,
-  keyboard: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="7" y1="16" x2="17" y2="16"/></svg>`,
-  window: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/></svg>`,
-  camera: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
-  brain: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.5-6.5l-2.1 2.1m-8.8 8.8l-2.1 2.1m0-13l2.1 2.1m8.8 8.8l2.1 2.1"/></svg>`,
-  mic: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>`,
-  rocket: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>`,
-  check: `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"/></svg>`,
-  doubleCheck: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 6 9 17 4 12"/><polyline points="22 10 13 21 11 19"/></svg>`,
-  lightbulb: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;"><path d="M9 18h6m-4 4h2m-5-8.5a6 6 0 1 1 8 0c-.8.8-1.5 2-1.5 3.5h-5c0-1.5-.7-2.7-1.5-3.5z"/></svg>`,
-  eye: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 3px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`
+const ICON = {
+  bolt: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+  volume: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+  volumeLg: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+  link: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  cursor: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>',
+  keyboard: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h.01M10 12h.01M14 12h.01M18 12h.01M7 16h10"/></svg>',
+  window: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/></svg>',
+  windowLg: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>',
+  camera: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>',
+  spark: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>',
+  rocket: '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>'
 };
 
 const SIM_COMMANDS = {
   set_volume: {
     title: "Windows 11 Desktop — Master Audio Control",
-    tier: "Tier 1: Local Rule (<5ms)",
-    state: `${SVGS.check} Done`,
-    transcript: '"Set my volume to 80%"',
+    tier: "Tier 1 · Local rule (<5 ms)",
+    state: "✓ Done",
+    transcript: "“Set my volume to 80%”",
     logs: [
-      { icon: SVGS.bolt, text: "Matched Rule: SetVolume(80)" },
-      { icon: SVGS.volume, text: "IAudioEndpointVolume: 0.80 applied" }
+      [ICON.bolt, "Matched rule: SetVolume(80)"],
+      [ICON.volume, "IAudioEndpointVolume: 0.80 applied"]
     ],
     render: () => `
-      <div class="hud-box">
-        <div class="hud-slider-track">
-          <div class="hud-slider-fill" style="width: 80%;"></div>
+      <div class="stage-card hud">
+        <div class="hud-row">
+          ${ICON.volumeLg}
+          <div class="hud-track"><div class="hud-fill" style="--to: 80%"></div></div>
+          <span class="hud-num">80%</span>
         </div>
-        <span class="hud-label">${SVGS.volume} Master Volume Adjusted to 80%</span>
-      </div>
-    `
+        <p class="hud-label">Master volume adjusted to 80%</p>
+      </div>`
   },
   whatsapp_msg: {
-    title: "WhatsApp Web (Chrome CDP Pierced) — Vyoma Handless",
-    tier: "Tier 1: Local Chained Rule (<15ms)",
-    state: `${SVGS.check} Chained Done`,
-    transcript: '"Select Vaishu and type hi"',
+    title: "WhatsApp Web (Chrome, CDP pierced)",
+    tier: "Tier 1 · Chained rule (<15 ms)",
+    state: "✓ Chained",
+    transcript: "“Select Vaishu and type hi”",
     logs: [
-      { icon: SVGS.link, text: "Chained 2 actions: Click contact -> Type text" },
-      { icon: SVGS.cursor, text: "Clicked contact: 'Vaishu' (WhatsApp list item)" },
-      { icon: SVGS.keyboard, text: "Typed 'hi' into 'Type a message' box" }
+      [ICON.link, "Chained 2 actions: click contact → type text"],
+      [ICON.cursor, "Clicked contact ‘Vaishu’ (list item)"],
+      [ICON.keyboard, "Typed ‘hi’ into ‘Type a message’"]
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; overflow: hidden; border: 1px solid rgba(60,50,40,0.12); box-shadow: var(--shadow-md); font-family: sans-serif;">
-        <div style="background: #f5f0e8; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(60,50,40,0.08);">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 13px;">V</div>
-          <div>
-            <div style="color: #18181b; font-size: 13px; font-weight: 700;">Vaishu</div>
-            <div style="color: #71717a; font-size: 11px;">online • Handless Selected Target</div>
-          </div>
+      <div class="stage-card">
+        <div class="chat-head target-ring">
+          <span class="avatar">V</span>
+          <div><strong>Vaishu</strong><span>online · selected by Handless</span></div>
         </div>
-        <div style="height: 130px; padding: 12px; background: #faf7f2; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;">
-          <div style="align-self: flex-start; background: #ffffff; color: #18181b; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; border: 1px solid rgba(60,50,40,0.08);">
-            Hey, are we still meeting today?
-          </div>
-          <div style="align-self: flex-end; background: #18181b; color: #ffffff; padding: 6px 12px; border-radius: 8px; font-size: 12px; max-width: 80%; display: flex; align-items: center; gap: 6px;">
-            <span style="font-weight: 600;">hi</span>
-            <span style="display: inline-flex; align-items: center; opacity: 0.8;">${SVGS.doubleCheck}</span>
-          </div>
+        <div class="chat-body">
+          <span class="bubble in">Hey, are we still meeting today?</span>
+          <span class="bubble out">hi ✓✓</span>
         </div>
-        <div style="background: #ffffff; padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-top: 1px solid rgba(60,50,40,0.08);">
-          <div style="flex: 1; background: #f5f0e8; border-radius: 8px; padding: 6px 12px; color: #18181b; font-size: 12px; display: flex; align-items: center;">
-            <span style="opacity: 0.6;">Type a message</span>
-            <span style="width: 2px; height: 14px; background: #18181b; margin-left: 2px; animation: pulse 1s infinite;"></span>
-          </div>
-          <div style="color: #71717a; display: flex; align-items: center;">${SVGS.mic}</div>
-        </div>
-      </div>
-    `
+        <div class="chat-input">Type a message<span class="caret"></span></div>
+      </div>`
   },
   snap_left: {
     title: "Windows 11 Snap Assist — Layout Manager",
-    tier: "Tier 1: System Hotkey (Win+Left)",
-    state: `${SVGS.check} Snapped`,
-    transcript: '"Snap window to the left"',
+    tier: "Tier 1 · System hotkey",
+    state: "✓ Snapped",
+    transcript: "“Snap window to the left”",
     logs: [
-      { icon: SVGS.window, text: "Target active window: Chrome" },
-      { icon: SVGS.bolt, text: "Dispatched hotkey: Win + Left" }
+      [ICON.window, "Target active window: Chrome"],
+      [ICON.bolt, "Dispatched hotkey: Win + Left"]
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; height: 200px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(60,50,40,0.12); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px; box-shadow: var(--shadow-md);">
-        <div style="background: #f4f4f5; border: 2px solid #18181b; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
-          <div style="color: #18181b;">${SVGS.window}</div>
-          <span style="font-size: 12px; font-weight: 700; color: #18181b;">Chrome (Snapped 50% Left)</span>
-          <span style="font-size: 10px; color: #71717a;">Bounds: (0, 0, 960, 1080)</span>
+      <div class="stage-card snap">
+        <div class="snap-pane on">
+          ${ICON.windowLg}
+          <strong>Chrome · snapped left</strong>
+          <code>bounds (0, 0, 960, 1080)</code>
         </div>
-        <div style="background: #faf7f2; border: 1px dashed rgba(60,50,40,0.2); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
-          <span style="font-size: 11px; font-weight: 600; color: #71717a;">Desktop / Snap Assist</span>
-          <span style="font-size: 9px; color: #a1a1aa;">Choose secondary app</span>
-        </div>
-      </div>
-    `
+        <div class="snap-pane off">Snap Assist<br>choose a second app</div>
+      </div>`
   },
   screen_lens: {
-    title: "Screen Lens — Gemini 2.5 Flash Vision Grounding",
-    tier: "Tier 3: Cloud Gemini Vision (420ms)",
-    state: `${SVGS.eye} Analyzed`,
-    transcript: '"Screen lens: explain this error"',
+    title: "Screen Lens — Gemini 2.5 Flash vision",
+    tier: "Tier 3 · Cloud vision (420 ms)",
+    state: "◉ Analyzed",
+    transcript: "“Screen lens: explain this error”",
     logs: [
-      { icon: SVGS.camera, text: "Captured screen bitmap (1920x1080)" },
-      { icon: SVGS.brain, text: "Gemini Vision parsed stacktrace in 420ms" }
+      [ICON.camera, "Captured screen bitmap (1920×1080)"],
+      [ICON.spark, "Gemini Vision parsed stack trace in 420 ms"]
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(24,24,27,0.25); padding: 16px; box-shadow: var(--shadow-md); font-family: monospace;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-          <span style="color: #dc2626; font-size: 12px; font-weight: bold;">● TypeError: Cannot read property 'map' of undefined</span>
-          <span style="font-size: 10px; padding: 2px 6px; background: #f4f4f5; color: #18181b; border: 1px solid #e4e4e7; border-radius: 4px; font-weight: bold;">Screen Lens OCR</span>
+      <div class="stage-card lens">
+        <div class="lens-err">● TypeError: Cannot read property 'map' of undefined <span class="lens-tag">Screen Lens</span></div>
+        <div class="lens-stack">at UserList (components/Users.tsx:42:15)<br>at renderWithHooks (react-dom.development.js:16305)</div>
+        <div class="lens-fix">
+          <span class="scanline"></span>
+          <strong>Suggested fix</strong>
+          <code>users</code> is <code>undefined</code> until the fetch finishes. Use <code>users?.map(…)</code> on line 42, or initialise the state as <code>[]</code>.
         </div>
-        <div style="background: #f5f0e8; padding: 8px 10px; border-radius: 6px; font-size: 11px; color: #3f3f46; margin-bottom: 12px; border-left: 3px solid #dc2626;">
-          at UserList (components/Users.tsx:42:15)<br>
-          at renderWithHooks (react-dom.development.js:16305)
-        </div>
-        <div style="background: #f4f4f5; border-radius: 6px; padding: 10px; font-size: 12px; color: #18181b; font-family: var(--font-sans); border: 1px solid #e4e4e7;">
-          <strong style="color: #18181b;">${SVGS.lightbulb} Handless AI Solution:</strong>
-          <p style="margin-top: 4px; font-size: 11px; color: #3f3f46; line-height: 1.45;">
-            Your <code style="color: #18181b; background: #e4e4e7; padding: 1px 4px; border-radius: 3px;">users</code> state variable is <code style="color: #18181b;">undefined</code> prior to fetch completion. Update line 42 to <code style="color: #18181b; font-weight: bold;">users?.map(...)</code> or initialize state as <code style="color: #18181b; font-weight: bold;">[]</code>.
-          </p>
-        </div>
-      </div>
-    `
+      </div>`
   },
   spec_dictation: {
-    title: "Wispr Flow Dictation — Sub-100ms Speculative Streaming",
-    tier: "Speculative Engine (<100ms)",
-    state: `${SVGS.bolt} Typing`,
-    transcript: '"Hold F8: The market response to autonomous desktop workflows has exceeded our expectations..."',
+    title: "Speculative dictation — sub-100 ms streaming",
+    tier: "Speculative engine (<100 ms)",
+    state: "⚡ Typing",
+    transcript: "Holding Ctrl + Shift — “The market response to autonomous desktop workflows…”",
     logs: [
-      { icon: SVGS.mic, text: "F8 key down: Speculative streaming chunk 1 & 2" },
-      { icon: SVGS.bolt, text: "Whisper Large v3 pre-transcription completed" },
-      { icon: SVGS.rocket, text: "F8 released: Typed 14 words in 68ms" }
+      [ICON.mic, "Ctrl + Shift held: streaming chunks 1 & 2"],
+      [ICON.bolt, "Whisper Large v3 pre-transcription done"],
+      [ICON.rocket, "Keys released: typed 14 words in 68 ms"]
     ],
     render: () => `
-      <div style="width: 100%; max-width: 460px; background: #ffffff; border-radius: 12px; border: 1px solid rgba(60,50,40,0.12); padding: 18px; box-shadow: var(--shadow-md);">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(60,50,40,0.08);">
-          <span style="font-size: 12px; font-weight: 700; color: #18181b;">Active Document — WordPad</span>
-          <span style="font-size: 10px; padding: 2px 8px; background: #f4f4f5; color: #18181b; border: 1px solid #e4e4e7; border-radius: 10px; font-weight: 700;">Sub-100ms Realtime</span>
-        </div>
-        <p style="font-size: 13.5px; line-height: 1.6; color: #27272a; font-family: serif;">
-          The market response to autonomous desktop workflows has exceeded our expectations. By combining native OS accessibility with speculative transcription, Handless completely eliminates friction<span style="display: inline-block; width: 2px; height: 16px; background: #18181b; vertical-align: middle; margin-left: 2px; animation: pulse 0.8s infinite;"></span>
-        </p>
-      </div>
-    `
+      <div class="stage-card doc">
+        <div class="doc-head">Active document — WordPad <span>Real-time</span></div>
+        <p id="typeTarget"></p>
+      </div>`,
+    after: (stage) => typeOut(stage.querySelector("#typeTarget"),
+      "The market response to autonomous desktop workflows has exceeded our expectations. By combining native OS accessibility with speculative transcription, Handless removes the friction.")
   }
 };
 
+let typeTimer = null;
+function typeOut(el, text) {
+  if (!el) return;
+  clearInterval(typeTimer);
+  if (REDUCED_MOTION) { el.innerHTML = text + '<span class="caret"></span>'; return; }
+  const words = text.split(" ");
+  let i = 0;
+  typeTimer = setInterval(() => {
+    i++;
+    el.innerHTML = words.slice(0, i).join(" ") + '<span class="caret"></span>';
+    if (i >= words.length) clearInterval(typeTimer);
+  }, 70);
+}
+
 function initVoiceSimulator() {
-  const pills = document.querySelectorAll(".cmd-pill");
-  const simTitle = document.getElementById("simTitle");
-  const simTierBadge = document.getElementById("simTierBadge");
-  const simActionState = document.getElementById("simActionState");
-  const simTranscript = document.getElementById("simTranscript");
-  const simActionLog = document.getElementById("simActionLog");
-  const stagePlaceholder = document.getElementById("stagePlaceholder");
+  const cmds = document.querySelectorAll(".cmd");
+  const stage = document.getElementById("stagePlaceholder");
+  const els = {
+    title: document.getElementById("simTitle"),
+    tier: document.getElementById("simTierBadge"),
+    state: document.getElementById("simActionState"),
+    transcript: document.getElementById("simTranscript"),
+    log: document.getElementById("simActionLog")
+  };
+  if (!cmds.length || !stage) return;
 
-  if (!pills.length || !stagePlaceholder) return;
+  const show = (key) => {
+    const cmd = SIM_COMMANDS[key];
+    if (!cmd) return;
+    clearInterval(typeTimer);
+    els.title.textContent = cmd.title;
+    els.tier.textContent = cmd.tier;
+    els.state.textContent = cmd.state;
+    els.transcript.textContent = cmd.transcript;
+    els.log.innerHTML = cmd.logs
+      .map(([icon, text], i) => `<li style="animation-delay:${i * 180}ms">${icon}<span>${text}</span></li>`)
+      .join("");
+    stage.innerHTML = cmd.render();
+    if (cmd.after) cmd.after(stage);
+  };
 
-  pills.forEach(pill => {
-    pill.addEventListener("click", () => {
-      pills.forEach(p => p.classList.remove("active"));
-      pill.classList.add("active");
-
-      const cmdKey = pill.getAttribute("data-cmd");
-      const cmd = SIM_COMMANDS[cmdKey];
-      if (!cmd) return;
-
-      if (simTitle) simTitle.textContent = cmd.title;
-      if (simTierBadge) simTierBadge.textContent = cmd.tier;
-      if (simActionState) simActionState.textContent = cmd.state;
-      if (simTranscript) simTranscript.textContent = cmd.transcript;
-
-      if (simActionLog) {
-        simActionLog.innerHTML = cmd.logs
-          .map(log => `
-            <div class="log-entry">
-              <span class="log-icon">${log.icon}</span>
-              <span class="log-text">${log.text}</span>
-            </div>
-          `)
-          .join("");
-      }
-
-      stagePlaceholder.innerHTML = cmd.render();
-    });
-  });
-}
-
-// ------------------------------------------------------------
-// 3. FAQ Accordion Interactivity
-// ------------------------------------------------------------
-function initFaqAccordion() {
-  const faqItems = document.querySelectorAll(".faq-item");
-
-  faqItems.forEach(item => {
-    const btn = item.querySelector(".faq-question");
-    if (!btn) return;
-
+  cmds.forEach(btn => {
     btn.addEventListener("click", () => {
-      const isActive = item.classList.contains("active");
-      faqItems.forEach(other => other.classList.remove("active"));
-      if (!isActive) {
-        item.classList.add("active");
-      }
+      cmds.forEach(b => {
+        b.classList.toggle("active", b === btn);
+        b.setAttribute("aria-selected", String(b === btn));
+      });
+      btn.scrollIntoView({ block: "nearest", inline: "center", behavior: REDUCED_MOTION ? "auto" : "smooth" });
+      show(btn.dataset.cmd);
     });
   });
+
+  show("set_volume");
 }
 
 // ------------------------------------------------------------
-// 4. Clipboard Copy Functionality
+// 5. Clipboard helpers
 // ------------------------------------------------------------
-function copyCode() {
-  const codeEl = document.getElementById("installCode");
-  if (!codeEl) return;
-
-  const text = codeEl.innerText;
-  navigator.clipboard.writeText(text).then(() => {
-    const copyBtn = document.querySelector(".btn-copy");
-    if (copyBtn) {
-      const originalText = copyBtn.innerText;
-      copyBtn.innerText = "Copied!";
-      copyBtn.style.background = "#18181b";
-      copyBtn.style.color = "#fff";
-
-      setTimeout(() => {
-        copyBtn.innerText = originalText;
-        copyBtn.style.background = "";
-        copyBtn.style.color = "";
-      }, 2000);
-    }
-  }).catch(err => {
-    console.error("Failed to copy code:", err);
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+  // Fallback for older mobile browsers
+  return new Promise((resolve, reject) => {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    ok ? resolve() : reject(new Error("copy failed"));
   });
 }
 
-window.copyCode = copyCode;
+function initCopyInstall() {
+  const btn = document.getElementById("copyInstall");
+  const code = document.getElementById("installCode");
+  if (!btn || !code) return;
+
+  btn.addEventListener("click", () => {
+    copyText(code.innerText).then(() => {
+      btn.textContent = "Copied";
+      btn.classList.add("copied");
+      setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("copied"); }, 2000);
+    }).catch(() => { btn.textContent = "Press Ctrl+C"; });
+  });
+}
 
 // ------------------------------------------------------------
-// 5. Mobile & Android Experience Handler
+// 6. Mobile & Android experience
 // ------------------------------------------------------------
 function initMobileSupport() {
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 820;
-  const isAndroid = /Android/i.test(navigator.userAgent);
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    || (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent)); // iPadOS
 
-  const banner = document.getElementById("mobileDeviceBanner");
-  const bannerClose = document.getElementById("bannerClose");
-  const toggleBtn = document.getElementById("mobileToggleBtn");
-  const drawer = document.getElementById("mobileNavDrawer");
+  const notice = document.getElementById("deviceNotice");
+  const noticeClose = document.getElementById("deviceNoticeClose");
   const modal = document.getElementById("mobileModal");
   const modalClose = document.getElementById("modalClose");
-  const btnCopyDesktop = document.getElementById("btnCopyDesktopLink");
+  const btnCopyLink = document.getElementById("btnCopyDesktopLink");
 
-  // Show banner if mobile
-  if (banner) {
-    if (sessionStorage.getItem("handless_mobile_banner_closed") === "true") {
-      banner.style.display = "none";
-    } else {
-      banner.style.display = "block";
-    }
-
-    if (bannerClose) {
-      bannerClose.addEventListener("click", () => {
-        banner.style.display = "none";
-        sessionStorage.setItem("handless_mobile_banner_closed", "true");
-      });
-    }
-  }
-
-  // Mobile Hamburger Navigation Drawer
-  if (toggleBtn && drawer) {
-    toggleBtn.addEventListener("click", () => {
-      const isOpen = drawer.classList.contains("open");
-      if (isOpen) {
-        drawer.classList.remove("open");
-        toggleBtn.classList.remove("open");
-      } else {
-        drawer.classList.add("open");
-        toggleBtn.classList.add("open");
-      }
-    });
-
-    const drawerLinks = drawer.querySelectorAll(".drawer-link");
-    drawerLinks.forEach(link => {
-      link.addEventListener("click", () => {
-        drawer.classList.remove("open");
-        toggleBtn.classList.remove("open");
-      });
+  if (notice && isMobile && store("handless_notice_closed") !== "1") {
+    notice.hidden = false;
+    noticeClose.addEventListener("click", () => {
+      notice.hidden = true;
+      store("handless_notice_closed", "1");
     });
   }
 
-  // Intercept Download clicks on Mobile / Android
-  const downloadTriggers = document.querySelectorAll(".download-trigger");
-  downloadTriggers.forEach(btn => {
-    btn.addEventListener("click", (e) => {
-      if (isMobile || isAndroid) {
-        e.preventDefault();
-        if (modal) {
-          modal.classList.add("open");
-        }
-      }
+  if (!modal) return;
+
+  const openModal = () => {
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+    modalClose.focus();
+  };
+  const closeModal = () => {
+    modal.hidden = true;
+    document.body.style.overflow = "";
+  };
+
+  // Phones get a "send it to your PC" sheet instead of a 88 MB download
+  document.querySelectorAll(".download-trigger").forEach(btn => {
+    btn.addEventListener("click", e => {
+      if (!isMobile) return;
+      e.preventDefault();
+      openModal();
     });
   });
 
-  // Modal Close Listeners
-  if (modalClose && modal) {
-    modalClose.addEventListener("click", () => {
-      modal.classList.remove("open");
-    });
+  modalClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.hidden) closeModal(); });
 
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) {
-        modal.classList.remove("open");
-      }
-    });
-  }
-
-  // Copy Desktop Link Handler
-  if (btnCopyDesktop) {
-    btnCopyDesktop.addEventListener("click", () => {
-      const url = "https://handless.vyomagroup.online/downloads/VyomaHandless-v0.1.0-windows-x64.zip";
-      navigator.clipboard.writeText(url).then(() => {
-        const originalHTML = btnCopyDesktop.innerHTML;
-        btnCopyDesktop.innerHTML = `${SVGS.check} <span>Direct PC Link Copied!</span>`;
-        btnCopyDesktop.style.background = "#18181b";
-        btnCopyDesktop.style.color = "#ffffff";
-
-        setTimeout(() => {
-          btnCopyDesktop.innerHTML = originalHTML;
-          btnCopyDesktop.style.background = "";
-          btnCopyDesktop.style.color = "";
-        }, 2500);
-      }).catch(err => {
-        console.error("Failed to copy link:", err);
-      });
+  if (btnCopyLink) {
+    const label = btnCopyLink.querySelector("span");
+    btnCopyLink.addEventListener("click", () => {
+      copyText(DOWNLOAD_URL).then(() => {
+        label.textContent = "Link copied — paste it on your PC";
+        setTimeout(() => { label.textContent = "Copy PC download link"; }, 2500);
+      }).catch(() => { label.textContent = "Couldn't copy — long-press the link below"; });
     });
   }
 }

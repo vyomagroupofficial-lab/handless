@@ -113,7 +113,7 @@ class SettingsPanel(QDialog):
         cred_layout.addLayout(key_input_row)
 
         key_btn_row = QHBoxLayout()
-        self.test_key_btn = QPushButton("Test & Store Key")
+        self.test_key_btn = QPushButton("Test && Store Key")
         self.test_key_btn.setObjectName("primaryButton")
         self.test_key_btn.clicked.connect(self._store_and_test_key)
         key_btn_row.addWidget(self.test_key_btn)

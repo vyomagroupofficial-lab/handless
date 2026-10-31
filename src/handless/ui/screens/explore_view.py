@@ -229,7 +229,7 @@ class ExploreScreenView(QWidget):
         self.content_widget = QWidget()
         self.content_widget.setStyleSheet("background-color: transparent;")
         self.main_layout = QVBoxLayout(self.content_widget)
-        self.main_layout.setContentsMargins(2, 2, 2, 8)
+        self.main_layout.setContentsMargins(0, 2, 0, 8)
         self.main_layout.setSpacing(14)
 
         # 1. Header (Explore + Subtitle + Search Bar)
@@ -329,9 +329,9 @@ class ExploreScreenView(QWidget):
         sp_layout.addWidget(lens)
 
         self.explore_search = QLineEdit(search_pill)
-        self.explore_search.setPlaceholderText("Search tools, apps, or actions...")
+        self.explore_search.setPlaceholderText("Search tools...")
         self.explore_search.setStyleSheet("border: none; background: transparent; color: #18181B; font-size: 10.5px;")
-        self.explore_search.setFixedWidth(130)
+        self.explore_search.setFixedWidth(118)
         self.explore_search.textChanged.connect(self._handle_live_search)
         self.explore_search.returnPressed.connect(lambda: self._handle_search(self.explore_search.text()))
         sp_layout.addWidget(self.explore_search)
@@ -498,9 +498,10 @@ class ExploreScreenView(QWidget):
         grid.setContentsMargins(0, 0, 0, 0)
         grid.setSpacing(8)
 
+        # Single column: title + badge + description need the full sidebar width
         for idx, (title, desc, svg, cmd, badge) in enumerate(items):
-            row = idx // 2
-            col = idx % 2
+            row = idx
+            col = 0
             card = self._make_catalog_card(title, desc, svg, cmd, badge)
             grid.addWidget(card, row, col)
 
@@ -528,6 +529,7 @@ class ExploreScreenView(QWidget):
         icon_lbl = QLabel(card)
         icon_lbl.setPixmap(render_svg_pixmap(svg, 20, 20, color="#18181B"))
         icon_lbl.setFixedSize(24, 24)
+        icon_lbl.setStyleSheet("border: none; background: transparent;")
         c_layout.addWidget(icon_lbl, alignment=Qt.AlignmentFlag.AlignVCenter)
 
         # Details
@@ -614,6 +616,7 @@ class ExploreScreenView(QWidget):
         icon_lbl = QLabel(card)
         icon_lbl.setPixmap(render_svg_pixmap(svg, 20, 20, color="#18181B"))
         icon_lbl.setFixedSize(22, 22)
+        icon_lbl.setStyleSheet("border: none; background: transparent;")
         c_layout.addWidget(icon_lbl)
 
         txt_col = QVBoxLayout()
@@ -629,6 +632,7 @@ class ExploreScreenView(QWidget):
 
         chev = QLabel(card)
         chev.setPixmap(render_svg_pixmap(SVG_CHEVRON_RIGHT, 12, 12, color="#A1A1AA"))
+        chev.setStyleSheet("border: none; background: transparent;")
         c_layout.addWidget(chev)
 
         card.mousePressEvent = lambda e, c=cmd: self.command_submitted.emit(c)
@@ -652,8 +656,8 @@ class ExploreScreenView(QWidget):
         hdr.addWidget(see_all)
         layout.addLayout(hdr)
 
-        # 6 Horizontal Tiles with clean margins and no clipped text
-        row = QHBoxLayout()
+        # 6 tiles in a 3x2 grid so labels never clip at sidebar width
+        row = QGridLayout()
         row.setSpacing(5)
 
         tools = [
@@ -667,6 +671,7 @@ class ExploreScreenView(QWidget):
 
         for name, svg, cmd in tools:
             tile = QPushButton(container)
+            tile.setMinimumHeight(58)
             tile.setStyleSheet("""
                 QPushButton {
                     background-color: #FFFFFF;
@@ -699,7 +704,8 @@ class ExploreScreenView(QWidget):
             t_layout.addWidget(n_lbl)
 
             tile.clicked.connect(lambda checked=False, c=cmd: self.command_submitted.emit(c))
-            row.addWidget(tile)
+            idx = row.count()
+            row.addWidget(tile, idx // 3, idx % 3)
 
         layout.addLayout(row)
         return container
@@ -761,6 +767,7 @@ class ExploreScreenView(QWidget):
         icon_lbl = QLabel(card)
         icon_lbl.setPixmap(render_svg_pixmap(svg, 18, 18, color="#18181B"))
         icon_lbl.setFixedSize(20, 20)
+        icon_lbl.setStyleSheet("border: none; background: transparent;")
         c_layout.addWidget(icon_lbl)
 
         txt_col = QVBoxLayout()

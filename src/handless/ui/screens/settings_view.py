@@ -19,7 +19,7 @@ Matches the Settings Screen reference design:
       - "(Encrypted in Windows Credential Manager)"
       - "Status: Configured & Active in Windows Vault ✓"
       - Password bullets input with "Show" / "Hide" button
-      - "Test Store Key" and "Remove Key" buttons
+      - "Test & Store Key" and "Remove Key" buttons
   * Card 2: Groq Cloud High-Capacity Fallback Key Card:
       - Groq badge, "Fallback" badge, help tooltip, green toggle switch
       - "(Encrypted in Windows Credential Manager)"
@@ -117,7 +117,7 @@ class SettingsSubNavButton(QPushButton):
         self.text_label = text
         self.svg_icon = svg_icon
         self.is_active = is_active
-        self.setText(f"  {text}")
+        self.setText("  " + text.replace("&", "&&"))
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setFixedHeight(32)
         self._update_style()
@@ -176,6 +176,10 @@ class SettingsScreenView(QWidget):
         outer_layout.setContentsMargins(10, 6, 10, 8)
         outer_layout.setSpacing(8)
 
+        # Compact tab pills, shown instead of the sub-nav when the sidebar is narrow
+        self.pills_row = self._build_pills_row()
+        outer_layout.addWidget(self.pills_row)
+
         # Main Split: Left Sub-Nav + Right Content Stack
         split_layout = QHBoxLayout()
         split_layout.setContentsMargins(0, 0, 0, 0)
@@ -186,10 +190,10 @@ class SettingsScreenView(QWidget):
         split_layout.addWidget(self.sub_nav)
 
         # Vertical Divider Line
-        v_line = QFrame(self)
-        v_line.setFrameShape(QFrame.Shape.VLine)
-        v_line.setStyleSheet("color: #E8E5DC; background-color: #E8E5DC; min-width: 1px; max-width: 1px;")
-        split_layout.addWidget(v_line)
+        self.sub_nav_divider = QFrame(self)
+        self.sub_nav_divider.setFrameShape(QFrame.Shape.VLine)
+        self.sub_nav_divider.setStyleSheet("color: #E8E5DC; background-color: #E8E5DC; min-width: 1px; max-width: 1px;")
+        split_layout.addWidget(self.sub_nav_divider)
 
         # 2. Right Content Stack
         self.content_stack = QStackedWidget(self)
@@ -239,6 +243,19 @@ class SettingsScreenView(QWidget):
 
         # Select initial page
         self._select_nav_tab(0)
+        self._apply_compact_layout(self.width())
+
+    COMPACT_BREAKPOINT = 560
+
+    def _apply_compact_layout(self, width: int) -> None:
+        compact = width < self.COMPACT_BREAKPOINT
+        self.sub_nav.setVisible(not compact)
+        self.sub_nav_divider.setVisible(not compact)
+        self.pills_row.setVisible(compact)
+
+    def resizeEvent(self, event) -> None:  # noqa: N802
+        super().resizeEvent(event)
+        self._apply_compact_layout(event.size().width())
 
     # -----------------------------------------------------------------------
     # Left Sub-Nav Menu
@@ -340,10 +357,6 @@ class SettingsScreenView(QWidget):
         hdr_col.addWidget(sub)
         layout.addLayout(hdr_col)
 
-        # 2. Horizontal Category Pills Row
-        pills_widget = self._build_pills_row()
-        layout.addWidget(pills_widget)
-
         # 3. Card 1: Google Gemini AI Studio API Key Card
         gemini_card = self._build_gemini_card(content)
         layout.addWidget(gemini_card)
@@ -370,11 +383,14 @@ class SettingsScreenView(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(6)
 
-        pill_names = ["AI Models", "Voice & Audio", "Hotkeys", "Safety", "Privacy", "Architecture"]
+        pill_names = [
+            "AI Models", "Voice & Audio", "Hotkeys", "Safety", "Privacy",
+            "Architecture", "General", "Account", "About",
+        ]
         self.top_pills: List[QPushButton] = []
 
         for idx, name in enumerate(pill_names):
-            btn = QPushButton(name, container)
+            btn = QPushButton(name.replace("&", "&&"), container)
             btn.setCursor(Qt.CursorShape.PointingHandCursor)
             if idx == 0:
                 btn.setStyleSheet("background-color: #18181B; color: #FFFFFF; border-radius: 12px; padding: 4px 10px; font-size: 10px; font-weight: 600; border: none;")
@@ -417,7 +433,7 @@ class SettingsScreenView(QWidget):
 
         badge = QLabel("Primary", card)
         badge.setStyleSheet("background-color: #EDEAE0; color: #71717A; font-size: 9px; font-weight: 600; border-radius: 7px; padding: 1px 6px;")
-        title_row.addWidget(badge)
+        title_row.addWidget(badge, alignment=Qt.AlignmentFlag.AlignTop)
 
         help_icon = QLabel(card)
         help_icon.setPixmap(render_svg_pixmap(SVG_HELP_CIRCLE, 13, 13, color="#A1A1AA"))
@@ -490,7 +506,7 @@ class SettingsScreenView(QWidget):
         btn_row = QHBoxLayout()
         btn_row.setSpacing(8)
 
-        store_btn = QPushButton("Test Store Key", card)
+        store_btn = QPushButton("Test && Store Key", card)
         store_btn.setStyleSheet("""
             QPushButton {
                 background-color: #18181B;
@@ -599,7 +615,7 @@ class SettingsScreenView(QWidget):
 
         badge = QLabel("Fallback", card)
         badge.setStyleSheet("background-color: #EDE8DD; color: #71717A; font-size: 9px; font-weight: 600; border-radius: 7px; padding: 1px 6px;")
-        title_row.addWidget(badge)
+        title_row.addWidget(badge, alignment=Qt.AlignmentFlag.AlignTop)
 
         help_icon = QLabel(card)
         help_icon.setPixmap(render_svg_pixmap(SVG_HELP_CIRCLE, 13, 13, color="#A1A1AA"))

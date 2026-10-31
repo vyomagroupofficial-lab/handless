@@ -14,7 +14,7 @@ from .models import MeetingSession, MeetingSummary, TranscriptTurn
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_STORAGE_DIR = Path("data") / "meetings"
+DEFAULT_STORAGE_DIR = Path.home() / ".vyoma-handless" / "meetings"
 
 
 class MeetingStorage:

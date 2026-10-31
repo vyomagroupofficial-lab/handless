@@ -36,36 +36,48 @@ jobs:
         run: |
           pytest -q
 
-      - name: Build Standalone Windows Executable
+      - name: Fetch Offline Whisper Model
+        run: |
+          python scripts/fetch_whisper_model.py
+
+      - name: Ensure Inno Setup 6
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup -y --no-progress }
+
+      - name: Build Executable and Installer
         run: |
           python scripts/build_release.py
 
-      - name: Create GitHub Release & Upload Asset
+      - name: Create GitHub Release & Upload Assets
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
+            dist/VyomaHandless-Setup-*.exe
             dist/VyomaHandless-*.zip
-          name: Vyoma Handless ${{ github.ref_name }} (Windows 11 / 10 64-bit)
+          name: Vyoma Handless ${{ github.ref_name }} (Windows 11 / 10, 64-bit)
           body: |
-            ## 🚀 Vyoma Handless™ — ${{ github.ref_name }}
+            ## Vyoma Handless ${{ github.ref_name }}
 
-            The voice-first AI copilot for Windows 11 & 10.
+            Voice control for Windows 11 and 10.
 
-            ### 🌟 Key Capabilities
-            - **Sub-100ms Wispr Flow Speculative Streaming**: Hold `F8` to dictate; text appears instantaneously at your cursor.
-            - **True Web DOM Piercing**: Directly traverses Chromium accessibility and CDP on `localhost:9222`.
-            - **Native Hardware Control**: Adjust master volume, display brightness, power states, and window snapping without third-party drivers.
-            - **Multimodal Screen Lens**: `Win + Shift + Space` instantly analyzes your screen with Gemini 2.5 Flash.
-            - **Desktop Element Inspector**: Snaps crosshairs to UI controls with 3-tier resilient locators.
-            - **Gemini Live Voice Call**: Bidirectional low-latency spoken conversations with a 3D thinking orb.
+            ### Install
+            1. Download **VyomaHandless-Setup-*.exe** below.
+            2. Run it. No administrator rights are needed; it installs for your Windows account.
+               If Windows SmartScreen appears, choose **More info → Run anyway** (the installer is not code-signed yet).
+            3. Handless opens a short setup: microphone check, optional AI keys, start-with-Windows.
 
-            ### 📦 Standalone Portable Installation
-            1. Download `VyomaHandless-${{ github.ref_name }}-windows-x64.zip` below.
-            2. Extract the archive to any folder on your Windows PC.
-            3. Run `VyomaHandless.exe`.
+            A portable **.zip** is also attached if you prefer not to install.
 
-            > **Note**: Designed exclusively for Windows 11 / 10 (64-bit). Not compatible with Android or iOS.
+            ### Shortcuts
+            - **Ctrl + Space**: hold and speak a command
+            - **Hold Ctrl + Shift**: dictate text at your cursor
+            - **Win + Shift + Space**: Screen Lens, ask about anything on screen
+            - **Ctrl + Alt + H**: show or hide the sidebar
+            - **Ctrl + Shift + Q** or **Esc Esc**: emergency stop
+
+            Offline speech recognition (Whisper Base) is bundled, so voice commands work without an API key.
+            Add a free Groq or Gemini key in setup for faster, smarter results.
           draft: false
-          prerelease: true
-
+          prerelease: false

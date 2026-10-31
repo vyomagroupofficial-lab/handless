@@ -2,11 +2,7 @@
 
 Matches the History screen design:
 - Header: "History" + "Everything Handless has done for you." + "Review, search, and manage your past tasks and activities." + 3D Clock sculpture
-- 4 Stat/Metric Cards:
-  1. 128 Tasks completed (↑ +12%)
-  2. 5.4h Time saved (↑ +28%)
-  3. 42 Files processed (↑ +18%)
-  4. 21 Apps controlled (↑ +11%)
+- 4 Stat/Metric Cards computed from the HistoryJournal: tasks, dictations, words, apps
 - Search & Filter:
   - Search bar: "Search your history... (e.g. \"show my Chrome tasks\")"
   - "All time ⌵" dropdown pill
@@ -564,13 +560,15 @@ class HistoryScreenView(QWidget):
         self.dictation_layout.setSpacing(8)
         self.content_layout.addWidget(self.dictation_container)
 
-        # 6. Timeline Activity Feed: Today
+        # 6-7. Illustrative timeline sections. Kept for the design reference but hidden:
+        # the real activity feed above comes from the HistoryJournal.
         self.today_widget = self._build_today_section()
         self.content_layout.addWidget(self.today_widget)
+        self.today_widget.setVisible(False)
 
-        # 7. Timeline Activity Feed: Yesterday
         self.yesterday_widget = self._build_yesterday_section()
         self.content_layout.addWidget(self.yesterday_widget)
+        self.yesterday_widget.setVisible(False)
 
         self.content_layout.addStretch(1)
         scroll.setWidget(self.content_widget)
@@ -597,6 +595,8 @@ class HistoryScreenView(QWidget):
         if not self.journal:
             self.dictation_container.setVisible(False)
             return
+
+        self._refresh_metrics()
 
         sector_filter = None if self.active_category == "All" else self.active_category
         entries = self.journal.get_entries(limit=30, sector_filter=sector_filter)
@@ -632,6 +632,22 @@ class HistoryScreenView(QWidget):
             row = DictationRowWidget(entry, parent=self.dictation_container)
             row.revert_requested.connect(self._on_dictation_revert)
             self.dictation_layout.addWidget(row)
+
+    def _refresh_metrics(self) -> None:
+        entries = self.journal.get_entries(limit=100000) if self.journal else []
+        dictations = [e for e in entries if e.entry_type == "dictation"]
+        words = sum(len((e.cleaned_text or e.raw_text).split()) for e in dictations)
+        apps = {e.target_app for e in entries if e.target_app and e.target_app != "Active Window"}
+        values = {
+            "tasks": len([e for e in entries if e.status == "completed"]),
+            "dictations": len(dictations),
+            "words": words,
+            "apps": len(apps),
+        }
+        for key, value in values.items():
+            label = self.metric_labels.get(key)
+            if label is not None:
+                label.setText(f"{value:,}")
 
     def _handle_export_markdown(self) -> None:
         if self.journal:
@@ -677,14 +693,16 @@ class HistoryScreenView(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(8)
 
+        # Values are filled from the HistoryJournal in refresh_dictations()
         stats = [
-            ("128", "Tasks completed", "↑ +12%", SVG_SPARKLE),
-            ("5.4h", "Time saved", "↑ +28%", SVG_CLOCK),
-            ("42", "Files processed", "↑ +18%", SVG_FILE_TEXT),
-            ("21", "Apps controlled", "↑ +11%", SVG_APPS_GRID),
+            ("tasks", "0", "Tasks completed", "All time", SVG_SPARKLE),
+            ("dictations", "0", "Dictations", "All time", SVG_VOICE_WAVE),
+            ("words", "0", "Words dictated", "All time", SVG_FILE_TEXT),
+            ("apps", "0", "Apps used", "All time", SVG_APPS_GRID),
         ]
+        self.metric_labels: dict = {}
 
-        for val, label_text, delta_text, svg_icon in stats:
+        for key, val, label_text, delta_text, svg_icon in stats:
             card = QFrame(container)
             card.setObjectName("metricStatCard")
             card.setStyleSheet("""
@@ -705,13 +723,14 @@ class HistoryScreenView(QWidget):
             val_lbl = QLabel(val, card)
             val_lbl.setStyleSheet("color: #18181B; font-size: 17px; font-weight: 700; border: none; background: transparent;")
             c_layout.addWidget(val_lbl)
+            self.metric_labels[key] = val_lbl
 
             lbl = QLabel(label_text, card)
             lbl.setStyleSheet("color: #71717A; font-size: 9.5px; border: none; background: transparent;")
             c_layout.addWidget(lbl)
 
             delta_lbl = QLabel(delta_text, card)
-            delta_lbl.setStyleSheet("color: #16A34A; font-size: 9.5px; font-weight: 700; border: none; background: transparent;")
+            delta_lbl.setStyleSheet("color: #A1A1AA; font-size: 9px; font-weight: 600; border: none; background: transparent;")
             c_layout.addWidget(delta_lbl)
 
             layout.addWidget(card)
@@ -771,15 +790,8 @@ class HistoryScreenView(QWidget):
         return container
 
     def _build_category_pills(self) -> QWidget:
-        # Wrap category pills in a horizontal scroll area so none of the 7 pills are cut off
-        scroll = QScrollArea(self)
-        scroll.setWidgetResizable(True)
-        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        scroll.setFixedHeight(34)
-        scroll.setStyleSheet("background: transparent; border: none;")
-
-        container = QWidget()
+        # Pills wrap onto a second line at narrow widths (see ui.responsive.flow_pill_rows)
+        container = QWidget(self)
         container.setStyleSheet("background: transparent;")
         layout = QHBoxLayout(container)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -837,8 +849,7 @@ class HistoryScreenView(QWidget):
             layout.addWidget(btn)
 
         layout.addStretch(1)
-        scroll.setWidget(container)
-        return scroll
+        return container
 
     def _build_today_section(self) -> QWidget:
         container = QWidget(self)

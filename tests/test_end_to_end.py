@@ -9,7 +9,8 @@ def test_end_to_end_open_app():
     emergency_stop.reset()
     router = IntentRouter()
     launcher = DummyLauncher()
-    dispatcher = ActionDispatcher(launcher=launcher)
+    # DummyWindow has no switch_to_app, so a Chrome already open on this machine isn't focused instead
+    dispatcher = ActionDispatcher(launcher=launcher, window=DummyWindow())
 
     transcript = "Open Chrome"
     intent = router.interpret(transcript)

@@ -11,6 +11,7 @@ import array
 import logging
 import os
 import re
+import sys
 import tarfile
 import urllib.request
 from pathlib import Path
@@ -54,6 +55,13 @@ class WhisperSpeechRecognizer:
         p1 = Path("models") / DEFAULT_WHISPER_DIR
         if p1.is_dir():
             return p1.resolve()
+
+        # Model bundled inside the installed app (PyInstaller _internal folder)
+        bundle_dir = getattr(sys, "_MEIPASS", None)
+        if bundle_dir:
+            p_bundle = Path(bundle_dir) / "models" / DEFAULT_WHISPER_DIR
+            if p_bundle.is_dir():
+                return p_bundle
 
         p2 = Path.home() / ".vyoma-handless" / "models" / DEFAULT_WHISPER_DIR
         if p2.is_dir():

@@ -64,6 +64,7 @@ from handless.safety.emergency_stop import emergency_stop
 from handless.safety.hotkeys import GlobalHotkeyManager
 from handless.ui.floating_widget import FloatingCopilotWidget
 from handless.ui.macro_overlay import MacroRecordingBanner
+from handless.ui.onboarding import OnboardingWizard, should_run_onboarding
 from handless.ui.screen_lens import ScreenLensOverlay
 from handless.ui.settings_panel import SettingsPanel
 from handless.ui.tray_icon import HandlessTrayIcon
@@ -124,6 +125,12 @@ class HandlessApp:
         # 1. Load User Configuration
         self.config: AppConfig = load_config()
         self.dictation_mode: bool = False
+        self.start_in_background = "--background" in sys_argv
+
+        # 1.5 First-run setup (microphone, screen & safety, AI keys, startup).
+        # Runs before the speech engines start so keys entered here take effect now.
+        if should_run_onboarding(self.config, sys_argv):
+            self._run_onboarding()
 
         # 2. Initialize Intelligence & Dispatch Subsystems
         self.gemini = GeminiInterpreter(model_name=self.config.ai.gemini_model)
@@ -268,6 +275,7 @@ class HandlessApp:
             on_open_settings=self.open_settings,
             on_toggle_dictation=self._toggle_dictation_mode,
             on_exit=self.exit_app,
+            on_run_setup=self.run_setup_again,
         )
 
         self.settings_dialog: Optional[SettingsPanel] = None
@@ -349,6 +357,23 @@ class HandlessApp:
             on_undo_dictation=self.ui_bridge.undo_requested.emit,
         )
 
+    def _run_onboarding(self) -> None:
+        wizard = OnboardingWizard(self.config)
+        wizard.exec()
+        self.config = load_config()
+        self.start_in_background = False
+
+    def run_setup_again(self) -> None:
+        """Re-open the setup window from the tray. Key changes apply after a restart."""
+        wizard = OnboardingWizard(self.config)
+        if wizard.exec():
+            self.config = load_config()
+            if self.sidebar is not None:
+                if self.config.ui.sidebar_position == "left":
+                    self.sidebar.dock_to_left(animated=True)
+                else:
+                    self.sidebar.dock_to_right(animated=True)
+
     def _safe_open_transform_overlay(self) -> None:
         if hasattr(self, "transform_overlay") and self.transform_overlay:
             self.transform_overlay.open_at_cursor()
@@ -361,8 +386,12 @@ class HandlessApp:
         self.mic.start()
         self.hotkeys.start()
 
-        # Show UI
-        if self.sidebar is not None:
+        # Show UI (started at sign-in: stay out of the way as the floating button)
+        if self.sidebar is not None and self.config.ui.sidebar_position == "left":
+            self.sidebar.dock_to_left(animated=False)
+        if self.sidebar is not None and self.start_in_background:
+            self.floating_widget.show_animated()
+        elif self.sidebar is not None:
             self.sidebar.slide_in()
         else:
             self.voice_bar.show()

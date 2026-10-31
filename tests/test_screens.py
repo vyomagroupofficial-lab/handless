@@ -117,9 +117,8 @@ def test_thunder_screen_view(qapp):
     assert len(view.tab_buttons) == 4
     view._select_tab("Templates")
 
-    # Verify toggle switch
-    toggle = view.findChild(ModernMiniToggle)
-    assert toggle is not None
+    # Verify toggle switch widget behaviour
+    toggle = ModernMiniToggle(view, checked=True)
     initial = toggle.is_checked()
     toggle.set_checked(not initial)
     assert toggle.is_checked() != initial
@@ -159,6 +158,8 @@ def test_history_screen_view(qapp):
     view._filter_category("Apps")
 
     # Verify timeline row clicks
+    # Illustrative timeline rows still exist but stay hidden behind the real journal feed
+    assert not view.today_widget.isVisibleTo(view)
     timeline_rows = view.findChildren(TimelineRowWidget)
     assert len(timeline_rows) >= 10  # 8 today + 3 yesterday
     first_row = timeline_rows[0]

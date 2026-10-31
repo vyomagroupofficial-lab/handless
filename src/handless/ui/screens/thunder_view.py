@@ -130,7 +130,7 @@ class ThunderScreenView(QWidget):
         content = QWidget()
         content.setStyleSheet("background-color: transparent;")
         c_layout = QVBoxLayout(content)
-        c_layout.setContentsMargins(2, 2, 2, 8)
+        c_layout.setContentsMargins(0, 2, 0, 8)
         c_layout.setSpacing(14)
 
         # 1. Header (Thunder + BETA + 3D Lightning Emblem)
@@ -492,10 +492,22 @@ class ThunderScreenView(QWidget):
         hdr.addWidget(see_all)
         layout.addLayout(hdr)
 
-        # 3 Rows matching screenshot
-        layout.addWidget(self._make_recent_auto_row("Daily email summary", "Runs every day at 9:00 AM", SVG_BRAND_GMAIL, has_toggle=True))
-        layout.addWidget(self._make_recent_auto_row("Research latest tech news", "Last run 2 hours ago", SVG_BRAND_YOUTUBE, has_play=True, cmd="research latest tech news"))
-        layout.addWidget(self._make_recent_auto_row("Organize Downloads folder", "Last run 1 day ago", SVG_FOLDER, has_play=True, cmd="organize downloads folder"))
+        # Workflows the user recorded with "watch me" and saved by name
+        try:
+            from handless.actions.workflows import WorkflowManager
+            saved = WorkflowManager().load_user_workflows()
+        except Exception:
+            saved = []
+
+        if not saved:
+            empty = QLabel('No saved automations yet. Say “watch me”, do the task once, then “save workflow as …”.', container)
+            empty.setWordWrap(True)
+            empty.setStyleSheet("color: #71717A; font-size: 11px; padding: 8px 2px;")
+            layout.addWidget(empty)
+
+        for wf in saved[:5]:
+            phrase = wf.trigger_phrases[0] if wf.trigger_phrases else wf.name
+            layout.addWidget(self._make_recent_auto_row(wf.name, wf.description or f"Say “{phrase}”", SVG_LIGHTNING, has_play=True, cmd=phrase))
 
         return container
 

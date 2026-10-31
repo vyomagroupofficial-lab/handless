@@ -136,6 +136,12 @@ from .screens import (
     Thunder3DIllustration,
     ThunderScreenView,
 )
+from .responsive import (
+    clear_inherited_frame_borders,
+    enable_horizontal_wheel,
+    fit_to_width,
+    flow_pill_rows,
+)
 from .styles import SIDEBAR_QSS
 from .thinking_orbs import ThinkingOrbWidget
 
@@ -991,17 +997,12 @@ class RecentActivityWidget(QWidget):
         self.items_layout.setContentsMargins(0, 0, 0, 0)
         self.items_layout.setSpacing(3)
 
-        # Default initial recent items from reference design
-        default_recents = [
-            ("Opened Chrome", "2 mins ago", SVG_BRAND_CHROME, "#18181B", "open chrome"),
-            ("Transcribed Zoom Meeting", "8 mins ago", SVG_VIDEO_CAMERA, "#10B981", "transcribe meeting"),
-            ("Summarized a document", "14 mins ago", SVG_FILE_TEXT, "#18181B", "summarize latest document"),
-            ("Created a YouTube thumbnail", "28 mins ago", SVG_IMAGE, "#18181B", "open youtube"),
-            ("Changed system settings", "1 hour ago", SVG_SETTINGS, "#18181B", "open settings"),
-        ]
-
-        for title_text, time_text, svg, color, cmd in default_recents:
-            self._add_row(title_text, time_text, svg, color, cmd)
+        # Empty state until the user runs their first command
+        self.empty_label = QLabel("Nothing yet. Try saying “open Chrome” or type a command above.", self.items_container)
+        self.empty_label.setWordWrap(True)
+        self.empty_label.setProperty("class", "recentItemTime")
+        self.empty_label.setContentsMargins(6, 4, 6, 4)
+        self.items_layout.addWidget(self.empty_label)
 
         self.main_layout.addWidget(self.items_container)
 
@@ -1055,6 +1056,10 @@ class RecentActivityWidget(QWidget):
 
     def add_recent(self, title_text: str, time_text: str = "Just now", cmd: str = "") -> None:
         """Prepend a new recent action entry when user executes a command."""
+        if self.empty_label is not None:
+            self.items_layout.removeWidget(self.empty_label)
+            self.empty_label.deleteLater()
+            self.empty_label = None
         svg = SVG_ROCKET
         color = "#18181B"
         c_low = title_text.lower()
@@ -1305,9 +1310,12 @@ class SidebarWindow(QWidget):
             avail = screen.availableGeometry()
             margin_x = 12
             margin_y = 10
-            base_w = 640 if self._is_wide_mode else self._sidebar_width
             min_w = self.minimumSizeHint().width()
-            w = max(base_w, min_w)
+            if self._is_wide_mode:
+                # Always visibly wider than normal, even when large fonts raise the minimum
+                w = max(640, min_w + 160)
+            else:
+                w = max(self._sidebar_width, min_w)
             # Never exceed 90% of available screen width
             max_allowed_w = max(360, int(avail.width() * 0.90))
             w = min(w, max_allowed_w)
@@ -1511,6 +1519,14 @@ class SidebarWindow(QWidget):
         self.meeting_screen_view.command_submitted.connect(self._submit_text_command)
         self.meeting_screen_view.voice_toggled.connect(self._handle_mic_click)
         self.view_stack.addWidget(self.meeting_screen_view)
+
+        # Let every screen shrink to the sidebar width instead of clipping its right edge
+        for i in range(self.view_stack.count()):
+            page = self.view_stack.widget(i)
+            flow_pill_rows(page)
+            fit_to_width(page)
+            enable_horizontal_wheel(page)
+            clear_inherited_frame_borders(page)
 
         right_layout.addWidget(self.view_stack, stretch=1)
         self.view_stack.currentChanged.connect(lambda _: QTimer.singleShot(10, self._ensure_within_screen_bounds))
@@ -1840,6 +1856,7 @@ class SidebarWindow(QWidget):
 
     def _show_settings_view(self) -> None:
         self.view_stack.setCurrentIndex(6)
+        self.left_rail.set_active_tab("settings")
         self.cmd_input = self.settings_screen_view.input_field
         if hasattr(self, "settings_btn"):
             self.settings_btn.setStyleSheet("background-color: #ECE7DC; border-radius: 6px;")
@@ -2270,9 +2287,8 @@ class SidebarWindow(QWidget):
 
         margin_x = 12
         margin_y = 10
-        base_w = 640 if self._is_wide_mode else self._sidebar_width
         min_w = self.minimumSizeHint().width()
-        w = max(base_w, min_w)
+        w = max(640, min_w + 160) if self._is_wide_mode else max(self._sidebar_width, min_w)
         max_allowed_w = max(360, int(avail.width() * 0.90))
         w = min(w, max_allowed_w)
         h = max(480, avail.height() - (margin_y * 2))

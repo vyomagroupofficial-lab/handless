@@ -12,6 +12,7 @@ from typing import Callable, Optional
 from PySide6.QtGui import QAction, QColor, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
 
+from handless.ui.icons import get_bot_logo_icon
 from handless.safety.emergency_stop import emergency_stop
 
 logger = logging.getLogger(__name__)
@@ -55,6 +56,7 @@ class HandlessTrayIcon(QSystemTrayIcon):
         on_open_settings: Optional[Callable[[], None]] = None,
         on_toggle_dictation: Optional[Callable[[], None]] = None,
         on_exit: Optional[Callable[[], None]] = None,
+        on_run_setup: Optional[Callable[[], None]] = None,
         parent=None,
     ) -> None:
         super().__init__(parent)
@@ -63,7 +65,8 @@ class HandlessTrayIcon(QSystemTrayIcon):
         self.on_toggle_dictation = on_toggle_dictation
         self.on_exit = on_exit
 
-        self.setIcon(create_tray_icon_pixmap())
+        brand_icon = get_bot_logo_icon(without_bg=True, size=32)
+        self.setIcon(brand_icon if not brand_icon.isNull() else create_tray_icon_pixmap())
         self.setToolTip("Vyoma Handless — Voice Controlled PC")
 
         # Build Context Menu
@@ -84,7 +87,12 @@ class HandlessTrayIcon(QSystemTrayIcon):
             self.settings_action.triggered.connect(self.on_open_settings)
         self.menu.addAction(self.settings_action)
 
-        self.stop_action = QAction("⛔ Emergency Stop", self.menu)
+        self.setup_action = QAction("Run setup again...", self.menu)
+        if on_run_setup:
+            self.setup_action.triggered.connect(on_run_setup)
+            self.menu.addAction(self.setup_action)
+
+        self.stop_action = QAction("Emergency Stop (Ctrl+Shift+Q)", self.menu)
         self.stop_action.triggered.connect(lambda: emergency_stop.trigger(reason="Tray Menu"))
         self.menu.addAction(self.stop_action)
 

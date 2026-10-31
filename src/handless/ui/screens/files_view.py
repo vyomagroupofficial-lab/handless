@@ -5,8 +5,8 @@ Matches the Files screen design:
 - Search bar: "Search files, folders, or ask Handless..."
 - Category filter pills: All, Documents, Images, Videos, Audio, Other
 - Quick actions (4 horizontal cards): Find a file, Summarize a file, Analyze image, Organize files
-- Recent files list: Project_Proposal.pdf, Meeting_Notes.docx, Budget_2026.xlsx, Thumbnail.png, Intro_Video.mp4
-- Storage overview card: "86.4 GB used of 476 GB" (18%) with segmented progress bar and category metrics
+- Recent files list: the newest files in Desktop, Documents and Downloads
+- Storage overview card: live usage of the Windows system drive
 - Bottom Synchronized Prompt Bar: "Tell Handless what to do with your files..."
 """
 
@@ -15,6 +15,7 @@ from __future__ import annotations
 import logging
 import os
 import shutil
+import time
 from typing import Callable, List, Optional
 
 from PySide6.QtCore import QPoint, QRect, QSize, Qt, Signal
@@ -50,6 +51,65 @@ from handless.ui.icons import (
 from .illustrations import Files3DIllustration
 
 logger = logging.getLogger(__name__)
+
+
+_FILE_KINDS = {
+    "Documents": ({".pdf", ".doc", ".docx", ".txt", ".md", ".rtf", ".xls", ".xlsx", ".csv", ".ppt", ".pptx", ".odt"}, "#2563EB"),
+    "Images": ({".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg", ".heic"}, "#8B5CF6"),
+    "Videos": ({".mp4", ".mov", ".mkv", ".avi", ".webm"}, "#6366F1"),
+    "Audio": ({".mp3", ".wav", ".m4a", ".flac", ".ogg"}, "#F59E0B"),
+}
+
+
+def _relative_time(timestamp: float) -> str:
+    delta = max(0, int(time.time() - timestamp))
+    if delta < 60:
+        return "just now"
+    for unit_seconds, unit in ((86400, "day"), (3600, "hour"), (60, "min")):
+        if delta >= unit_seconds:
+            n = delta // unit_seconds
+            return f"{n} {unit}{'s' if n != 1 else ''} ago"
+    return "just now"
+
+
+def _recent_user_files(limit: int = 5) -> List[tuple]:
+    """Most recently modified files at the top level of Desktop, Documents and Downloads."""
+    home = os.path.expanduser("~")
+    candidates = []
+    for folder in ("Desktop", "Documents", "Downloads"):
+        try:
+            with os.scandir(os.path.join(home, folder)) as it:
+                for entry in it:
+                    if entry.is_file() and not entry.name.startswith(("~$", ".")) and not entry.name.endswith((".lnk", ".ini", ".tmp")):
+                        candidates.append((entry.stat().st_mtime, entry.path))
+        except OSError:
+            continue
+    candidates.sort(reverse=True)
+
+    rows = []
+    for mtime, path in candidates[:limit]:
+        name = os.path.basename(path)
+        ext = os.path.splitext(name)[1].lower()
+        kind, color = "Other", "#71717A"
+        for kind_name, (exts, kind_color) in _FILE_KINDS.items():
+            if ext in exts:
+                kind, color = kind_name, kind_color
+                break
+        badge = (ext[1:4] or "?").upper()
+        rows.append((name, f"{kind} · {_relative_time(mtime)}", color, badge, path))
+    return rows
+
+
+def _system_drive_usage() -> tuple:
+    try:
+        usage = shutil.disk_usage(os.environ.get("SystemDrive", "C:") + "\\")
+        return usage.total, usage.used, usage.free
+    except OSError:
+        return 0, 0, 0
+
+
+def _fmt_gb(num_bytes: int) -> str:
+    return f"{num_bytes / (1024 ** 3):.1f} GB"
 
 
 class StorageProgressBar(QWidget):
@@ -325,15 +385,14 @@ class FilesScreenView(QWidget):
         hdr.addWidget(see_all)
         layout.addLayout(hdr)
 
-        files = [
-            ("Project_Proposal.pdf", "Documents · 2 mins ago", "#EF4444", "PDF"),
-            ("Meeting_Notes.docx", "Documents · 1 hour ago", "#2563EB", "W"),
-            ("Budget_2026.xlsx", "Documents · 3 hours ago", "#10B981", "X"),
-            ("Thumbnail.png", "Images · 5 hours ago", "#8B5CF6", "IMG"),
-            ("Intro_Video.mp4", "Videos · 1 day ago", "#6366F1", "VID"),
-        ]
+        files = _recent_user_files()
+        if not files:
+            empty = QLabel("No recent files in Desktop, Documents or Downloads yet.", container)
+            empty.setWordWrap(True)
+            empty.setStyleSheet("color: #71717A; font-size: 11px; padding: 10px 4px;")
+            layout.addWidget(empty)
 
-        for name, sub, color, badge_text in files:
+        for name, sub, color, badge_text, path in files:
             row = QFrame(container)
             row.setStyleSheet("QFrame { background-color: #FFFFFF; border: 1px solid #E8E5DC; border-radius: 12px; } QFrame:hover { background-color: #FAF9F5; }")
             r_layout = QHBoxLayout(row)
@@ -341,9 +400,9 @@ class FilesScreenView(QWidget):
             r_layout.setSpacing(10)
 
             badge = QLabel(badge_text, row)
-            badge.setStyleSheet(f"background-color: {color}; color: #FFFFFF; font-size: 9px; font-weight: 700; border-radius: 6px; padding: 4px 6px;")
+            badge.setStyleSheet(f"background-color: {color}; color: #FFFFFF; font-size: 8.5px; font-weight: 700; border-radius: 7px; padding: 0px;")
             badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            badge.setFixedSize(26, 26)
+            badge.setFixedSize(30, 30)
             r_layout.addWidget(badge)
 
             txt_col = QVBoxLayout()
@@ -363,13 +422,20 @@ class FilesScreenView(QWidget):
             more_btn.setStyleSheet("background: transparent; border: none;")
             r_layout.addWidget(more_btn)
 
-            row.mousePressEvent = lambda e, fn=name: self._handle_file_click(fn)
+            row.setCursor(Qt.CursorShape.PointingHandCursor)
+            row.mousePressEvent = lambda e, fp=path: self._open_path(fp)
             layout.addWidget(row)
 
         return container
 
     def _handle_file_click(self, file_name: str) -> None:
         self.command_submitted.emit(f"open {file_name}")
+
+    def _open_path(self, path: str) -> None:
+        try:
+            os.startfile(path)  # noqa: S606 - opens the user's own file with its default app
+        except OSError:
+            self._handle_file_click(os.path.basename(path))
 
     def _build_storage_overview(self) -> QWidget:
         card = QFrame()
@@ -393,32 +459,33 @@ class FilesScreenView(QWidget):
         hdr.addWidget(manage)
         layout.addLayout(hdr)
 
-        # Stats Row: "86.4 GB used of 476 GB" + "18%"
+        total, used, free = _system_drive_usage()
+        fraction = (used / total) if total else 0.0
+
         stats_row = QHBoxLayout()
-        used_lbl = QLabel("86.4 GB used of 476 GB", card)
+        used_lbl = QLabel(f"System drive · {_fmt_gb(free)} free" if total else "Drive usage unavailable", card)
         used_lbl.setStyleSheet("color: #71717A; font-size: 10px; border: none; background: transparent;")
         stats_row.addWidget(used_lbl)
 
         stats_row.addStretch(1)
 
-        pct_lbl = QLabel("18%", card)
+        pct_lbl = QLabel(f"{fraction:.0%}", card)
         pct_lbl.setStyleSheet("color: #18181B; font-size: 10.5px; font-weight: 700; border: none; background: transparent;")
         stats_row.addWidget(pct_lbl)
         layout.addLayout(stats_row)
 
         # Segmented Progress Bar
-        bar = StorageProgressBar(card, percentage=0.18)
+        bar = StorageProgressBar(card, percentage=fraction)
         layout.addWidget(bar)
 
-        # 4 Category Metrics (Documents, Images, Videos, Other)
+        # Used / Free / Total for the Windows system drive
         cat_row = QHBoxLayout()
         cat_row.setSpacing(4)
 
         categories = [
-            ("Documents", "31.2 GB", "#3B82F6"),
-            ("Images", "18.7 GB", "#F59E0B"),
-            ("Videos", "28.4 GB", "#EF4444"),
-            ("Other", "8.1 GB", "#10B981"),
+            ("Used", _fmt_gb(used), "#18181B"),
+            ("Free", _fmt_gb(free), "#10B981"),
+            ("Total", _fmt_gb(total), "#A1A1AA"),
         ]
 
         for name, size_str, dot_color in categories:
@@ -434,6 +501,7 @@ class FilesScreenView(QWidget):
             nl = QLabel(name, card)
             nl.setStyleSheet("color: #71717A; font-size: 9px; border: none; background: transparent;")
             d_row.addWidget(nl)
+            d_row.addStretch(1)
             col.addLayout(d_row)
 
             sz = QLabel(size_str, card)

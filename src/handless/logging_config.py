@@ -22,9 +22,13 @@ import warnings
 from typing import Optional
 
 
-# Default project logs directory
+# Default logs directory: the project folder when running from source, the user's
+# profile when running as an installed app (the install folder may be read-only).
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-LOGS_DIR = PROJECT_ROOT / "logs"
+if getattr(sys, "frozen", False):
+    LOGS_DIR = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "VyomaHandless" / "logs"
+else:
+    LOGS_DIR = PROJECT_ROOT / "logs"
 
 MAIN_LOG_FILE = LOGS_DIR / "handless.log"
 ERROR_LOG_FILE = LOGS_DIR / "handless_errors.log"

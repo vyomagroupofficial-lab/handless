@@ -290,7 +290,8 @@ class HandlessConfigActionCard(QWidget):
 
         # Diff Preview Box
         diff_box = QFrame(self)
-        diff_box.setStyleSheet("QFrame { background-color: #FFFFFF; border: 1px solid #ECE7DC; border-radius: 10px; }")
+        diff_box.setObjectName("configDiffBox")
+        diff_box.setStyleSheet("QFrame#configDiffBox { background-color: #FFFFFF; border: 1px solid #ECE7DC; border-radius: 10px; } QLabel { border: none; background: transparent; }")
         db_layout = QHBoxLayout(diff_box)
         db_layout.setContentsMargins(10, 8, 10, 8)
         db_layout.setSpacing(8)
@@ -333,7 +334,7 @@ class HandlessConfigActionCard(QWidget):
         br_layout.setContentsMargins(0, 0, 0, 0)
         br_layout.setSpacing(8)
 
-        self.allow_btn = QPushButton("Allow & Apply ✓", self.btn_row)
+        self.allow_btn = QPushButton("Allow && Apply ✓", self.btn_row)
         self.allow_btn.setStyleSheet("""
             QPushButton {
                 background-color: #18181B;
@@ -771,6 +772,21 @@ class ChatScreenView(QWidget):
         self.plan_card.view_activity_clicked.connect(lambda: self.command_submitted.emit("show activity log"))
         self._insert_before_stretch(self.plan_card)
 
+    BUBBLE_MAX_TEXT_WIDTH = 236
+
+    def _size_bubble_label(self, lbl: QLabel) -> None:
+        """Pin a bubble label to its wrapped width so its full height is laid out.
+
+        Word-wrapped labels inside aligned layouts are otherwise given a one-line
+        height, which cuts long messages off after the first line.
+        """
+        lbl.ensurePolished()
+        metrics = lbl.fontMetrics()
+        natural = max((metrics.horizontalAdvance(line) for line in lbl.text().splitlines() or [""]), default=0)
+        width = max(24, min(natural + 4, self.BUBBLE_MAX_TEXT_WIDTH))
+        lbl.setFixedWidth(width)
+        lbl.setMinimumHeight(lbl.heightForWidth(width))
+
     def add_user_message(self, text: str, time_str: str = "Just now") -> None:
         row = QWidget(self.chat_content)
         r_layout = QHBoxLayout(row)
@@ -791,6 +807,7 @@ class ChatScreenView(QWidget):
         lbl.setStyleSheet("color: #18181B; font-size: 12px; border: none; background: transparent;")
         lbl.setWordWrap(True)
         lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self._size_bubble_label(lbl)
         b_layout.addWidget(lbl)
         bubble_col.addWidget(bubble, alignment=Qt.AlignmentFlag.AlignRight)
 
@@ -834,6 +851,7 @@ class ChatScreenView(QWidget):
         lbl.setStyleSheet("color: #18181B; font-size: 12px; line-height: 1.4; border: none; background: transparent;")
         lbl.setWordWrap(True)
         lbl.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self._size_bubble_label(lbl)
         b_layout.addWidget(lbl)
         bubble_col.addWidget(bubble)
 

@@ -66,6 +66,7 @@ class UIConfig(BaseModel):
     stay_on_top: bool = True
     start_in_tray: bool = False
     window_opacity: float = 0.98
+    onboarding_completed: bool = False
 
 
 class SafetyConfig(BaseModel):
