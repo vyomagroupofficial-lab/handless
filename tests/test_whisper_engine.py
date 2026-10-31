@@ -3,14 +3,21 @@
 import wave
 from pathlib import Path
 import pytest
-from handless.voice.whisper_engine import WhisperSpeechRecognizer
+from handless.voice.whisper_engine import DEFAULT_WHISPER_DIR, WhisperSpeechRecognizer
+
+requires_model = pytest.mark.skipif(
+    not (Path("models") / DEFAULT_WHISPER_DIR).is_dir(),
+    reason="Whisper model not downloaded (python scripts/fetch_whisper_model.py)",
+)
 
 
+@requires_model
 def test_whisper_engine_initialization():
     rec = WhisperSpeechRecognizer(auto_download=False)
     assert rec.is_ready is True
 
 
+@requires_model
 def test_whisper_engine_decode_test_wav():
     rec = WhisperSpeechRecognizer(auto_download=False)
     assert rec.is_ready is True

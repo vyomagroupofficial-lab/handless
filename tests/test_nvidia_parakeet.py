@@ -7,9 +7,10 @@ import array
 from pathlib import Path
 import pytest
 
-from handless.voice.nvidia_parakeet import NvidiaParakeetRecognizer
+from handless.voice.nvidia_parakeet import DEFAULT_PARAKEET_DIR, NvidiaParakeetRecognizer
 
 
+@pytest.mark.skipif(not (Path("models") / DEFAULT_PARAKEET_DIR).is_dir(), reason="Parakeet model not downloaded")
 def test_nvidia_parakeet_initialization():
     """Verify NVIDIA Parakeet recognizer instantiates and loads model."""
     rec = NvidiaParakeetRecognizer(auto_download=False)
