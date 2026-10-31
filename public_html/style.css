@@ -567,23 +567,57 @@ code { font-family: var(--font-mono); font-size: .9em; }
 .sim-commands::-webkit-scrollbar { display: none; }
 
 .cmd {
-  flex-shrink: 0;
+  flex: 0 0 auto;
   scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  transition: background .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease), transform .2s var(--ease);
+}
+.cmd-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--orange-deep);
+}
+.cmd-say {
   font-size: 14px;
   font-weight: 500;
-  padding: 9px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg);
+  line-height: 1.35;
   color: var(--text-muted);
-  transition: all .2s var(--ease);
 }
-.cmd:hover { color: var(--text); border-color: var(--border-strong); }
+.cmd:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.cmd:hover .cmd-say { color: var(--text); }
+.cmd:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .cmd.active {
   background: var(--text);
   border-color: var(--text);
-  color: var(--bg);
-  box-shadow: 0 6px 16px rgba(29, 24, 19, .18);
+  box-shadow: 0 8px 20px rgba(29, 24, 19, .18);
+}
+.cmd.active .cmd-kind { color: #f2a37c; }
+.cmd.active .cmd-say { color: var(--bg); }
+
+@media (min-width: 881px) {
+  .sim-commands {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+@media (max-width: 880px) {
+  .cmd { width: 210px; }
 }
 
 .sim-window {

@@ -224,21 +224,21 @@ const SIM_COMMANDS = {
     title: "WhatsApp Web (Chrome, CDP pierced)",
     tier: "Tier 1 · Chained rule (<15 ms)",
     state: "✓ Chained",
-    transcript: "“Select Vaishu and type hi”",
+    transcript: "“Message Design Team: on my way”",
     logs: [
-      [ICON.link, "Chained 2 actions: click contact → type text"],
-      [ICON.cursor, "Clicked contact ‘Vaishu’ (list item)"],
-      [ICON.keyboard, "Typed ‘hi’ into ‘Type a message’"]
+      [ICON.link, "Chained 2 actions: open chat → type message"],
+      [ICON.cursor, "Opened chat ‘Design Team’ (list item)"],
+      [ICON.keyboard, "Typed ‘on my way’ and pressed Enter"]
     ],
     render: () => `
       <div class="stage-card">
         <div class="chat-head target-ring">
-          <span class="avatar">V</span>
-          <div><strong>Vaishu</strong><span>online · selected by Handless</span></div>
+          <span class="avatar">DT</span>
+          <div><strong>Design Team</strong><span>4 members · opened by Handless</span></div>
         </div>
         <div class="chat-body">
-          <span class="bubble in">Hey, are we still meeting today?</span>
-          <span class="bubble out">hi ✓✓</span>
+          <span class="bubble in">Standup moved to 10:30. Can you make it?</span>
+          <span class="bubble out">on my way ✓✓</span>
         </div>
         <div class="chat-input">Type a message<span class="caret"></span></div>
       </div>`
@@ -247,7 +247,7 @@ const SIM_COMMANDS = {
     title: "Windows 11 Snap Assist — Layout Manager",
     tier: "Tier 1 · System hotkey",
     state: "✓ Snapped",
-    transcript: "“Snap window to the left”",
+    transcript: "“Snap this window to the left”",
     logs: [
       [ICON.window, "Target active window: Chrome"],
       [ICON.bolt, "Dispatched hotkey: Win + Left"]
@@ -266,7 +266,7 @@ const SIM_COMMANDS = {
     title: "Screen Lens — Gemini 2.5 Flash vision",
     tier: "Tier 3 · Cloud vision (420 ms)",
     state: "◉ Analyzed",
-    transcript: "“Screen lens: explain this error”",
+    transcript: "Win + Shift + Space — “What does this error mean?”",
     logs: [
       [ICON.camera, "Captured screen bitmap (1920×1080)"],
       [ICON.spark, "Gemini Vision parsed stack trace in 420 ms"]

@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=2.1">
+  <link rel="stylesheet" href="style.css?v=2.2">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="icon" type="image/png" href="assets/logo-96.png">
   <link rel="apple-touch-icon" href="assets/logo-512.png">
@@ -160,11 +160,11 @@
 
       <div class="sim reveal">
         <div class="sim-commands" role="tablist" aria-label="Voice commands">
-          <button class="cmd active" role="tab" aria-selected="true" data-cmd="set_volume">“Set my volume to 80%”</button>
-          <button class="cmd" role="tab" aria-selected="false" data-cmd="whatsapp_msg">“Select Vaishu and type hi”</button>
-          <button class="cmd" role="tab" aria-selected="false" data-cmd="snap_left">“Snap window to the left”</button>
-          <button class="cmd" role="tab" aria-selected="false" data-cmd="screen_lens">“Screen lens: explain this error”</button>
-          <button class="cmd" role="tab" aria-selected="false" data-cmd="spec_dictation">Hold Ctrl + Shift · dictation</button>
+          <button class="cmd active" role="tab" aria-selected="true" data-cmd="set_volume"><span class="cmd-kind"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>Audio</span><span class="cmd-say">“Set my volume to 80%”</span></button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="whatsapp_msg"><span class="cmd-kind"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messaging</span><span class="cmd-say">“Message Design Team: on my way”</span></button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="snap_left"><span class="cmd-kind"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/></svg>Windows</span><span class="cmd-say">“Snap this window to the left”</span></button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="screen_lens"><span class="cmd-kind"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Screen Lens</span><span class="cmd-say">“What does this error mean?”</span></button>
+          <button class="cmd" role="tab" aria-selected="false" data-cmd="spec_dictation"><span class="cmd-kind"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg>Dictation</span><span class="cmd-say">Hold Ctrl + Shift and just talk</span></button>
         </div>
 
         <div class="sim-window">
@@ -466,6 +466,6 @@ python -m handless.app</code></pre>
     </div>
   </div>
 
-  <script src="app.js?v=2.1"></script>
+  <script src="app.js?v=2.2"></script>
 </body>
 </html>
